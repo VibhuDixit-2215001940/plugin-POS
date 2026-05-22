@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Scan Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ===== GLOBAL WATERMARK ===== */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            /* stays behind content */
+            pointer-events: none;
+            /* no click blocking */
+            opacity: 0.06;
+            /* very light watermark */
+        }
+
+        .watermark img {
+            width: 450px;
+            /* adjust size */
+            height: auto;
+        }
+
+        /* Make sure main content stays above watermark */
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        h1,
+        h2 {
+            color: black;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #e3e3e3;
+            border-radius: 5px;
+        }
+
+        .summary div {
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .critical {
+            color: red;
+        }
+
+        .high {
+            color: orange;
+        }
+
+        .medium {
+            color: gold;
+        }
+
+        .low {
+            color: green;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #555;
+            color: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #555;
+            color: white;
+        }
+
+        .details {
+            display: none;
+        }
+
+        .toggle {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+
+        .asset-grid {
+            display: flex;
+            flex-wrap: wrap;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .asset-card {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        .asset-card:hover {
+            background-color: #e0e0e0;
+            cursor: pointer;
+        }
+
+        .asset-card span {
+            font-size: 18px;
+        }
+
+        .sev-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Table ke sabhi cells (th + td) ka background aur styling */
+        .sev-table th,
+        .sev-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            /* Center text for all cells */
+            font-weight: bold;
+            color: black !important;
+            background-color: #f2f2f2;
+            /* Yahan apni pasand ka color set kar lo */
+        }
+
+        /* Table header (th) ke liye dark background */
+        .sev-table th {
+            background-color: #333;
+            color: white !important;
+        }
+
+        /* Style the Open Ports section */
+        .open-ports-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0;
+        }
+
+        .port-capsule {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 4px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .footer-container {
+            position: relative;
+            /* Stamp ko footer ke andar position karne ke liye */
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            font-size: 14px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .stamp-container {
+            position: absolute;
+            bottom: 10px;
+            /* Footer ke andar neeche */
+            right: 10px;
+            /* Footer ke bilkul right side */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stamp {
+            width: 150px;
+            /* Stamp ka size */
+            height: auto;
+            opacity: 0.8;
+            transform: rotate(-10deg);
+        }
+
+        .stamp-container p {
+            margin: 5px 0 0;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+        }
+
+        /* Cybersecurity-friendly, light-mode-friendly colors */
+        .port-capsule:nth-child(1) {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        /* Soft Green */
+        .port-capsule:nth-child(2) {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        /* Light Blue */
+        .port-capsule:nth-child(3) {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* Pale Yellow */
+        .port-capsule:nth-child(4) {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Soft Red */
+        .port-capsule:nth-child(5) {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        /* Neutral Gray */
+        .port-capsule:nth-child(6) {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Soft Cyan */
+        .port-capsule:nth-child(7) {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        /* Muted Rose */
+        .port-capsule:nth-child(8) {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+
+        /* Pastel Green */
+        .port-capsule:nth-child(9) {
+            background-color: #d6d8db;
+            color: #383d41;
+        }
+
+        /* Light Gray */
+        .port-capsule:nth-child(10) {
+            background-color: #ffebcd;
+            color: #8b4513;
+        }
+
+        .cvss-vector::before {
+            content: "High\A None\A Low";
+            position: absolute;
+            left: -30px;
+            top: 0;
+            height: 100%;
+            font-size: 9px;
+            line-height: 35px;
+            color: #666;
+            white-space: pre;
+            text-align: right;
+        }
+
+        /* Warm Beige */
+        .port-capsule:nth-child(11) {
+            background-color: #e8f0fe;
+            color: #174ea6;
+        }
+
+        /* Soft Google Blue */
+        .port-capsule:nth-child(12) {
+            background-color: #f4e8ff;
+            color: #6f42c1;
+        }
+
+        /* Light Purple */
+
+        /* Nessus-style vulnerability chapter (static layout, PDF-like) */
+        .nessus-chapter {
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #111;
+            border-top: 2px solid #222;
+            padding-top: 16px;
+            margin-top: 28px;
+        }
+
+        .nessus-chapter .report-meta {
+            font-size: 12px;
+            color: #222;
+            margin-bottom: 14px;
+        }
+
+        .host-vuln-banner {
+            border: 1px solid #000;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            background: #fafafa;
+        }
+
+        .sev-count-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 22px;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .sev-count-row span {
+            font-weight: bold;
+        }
+
+        .scan-host-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        @media (max-width: 720px) {
+            .scan-host-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .scan-host-grid>div {
+            border: 1px solid #bbb;
+            padding: 10px 12px;
+            background: #fff;
+        }
+
+        .scan-host-grid strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        h2.vuln-section-title {
+            font-size: 16px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 6px;
+            margin: 18px 0 14px 0;
+        }
+
+        .cve-tables-wrap {
+            margin: 10px 0 14px 0;
+            overflow-x: auto;
+        }
+
+        .cve-tables-wrap h4 {
+            margin: 12px 0 6px 0;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #222;
+            font-weight: bold;
+        }
+
+        table.report-table-cve {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 0;
+        }
+
+        table.report-table-cve th,
+        table.report-table-cve td {
+            border: 1px solid #333;
+            padding: 6px 8px;
+            vertical-align: top;
+        }
+
+        table.report-table-cve th {
+            background: #e8e8e8;
+            color: #111;
+        }
+
+        table.report-table-cve-epss td {
+            text-align: center;
+        }
+
+        /* EPSS: white card + semi-circular gauges */
+        .epss-dark-card {
+            background: #fff;
+            color: #111;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 14px 16px 18px;
+            margin-top: 4px;
+            max-width: 100%;
+        }
+
+        .epss-header-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px 20px;
+            margin-bottom: -10px;
+        }
+
+        .epss-header-row>div {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 72px;
+        }
+
+        .epss-header-row .lbl {
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .epss-header-row .val {
+            font-size: 15px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .epss-gauge-pair {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .gauge-unit {
+            text-align: center;
+            width: 160px;
+        }
+
+        .gauge-unit figcaption {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .gauge-unit svg {
+            display: block;
+            margin: 0 auto;
+            width: 160px;
+            height: 88px;
+        }
+
+        .gauge-arc-bg {
+            fill: none;
+            stroke: #bdbdbd;
+            stroke-width: 10;
+            stroke-linecap: round;
+        }
+
+        .gauge-needle-epss {
+            stroke: #4a9eff;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+
+        .gauge-needle-pct {
+            stroke: #34a853;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+
+        .gauge-cap {
+            fill: #333;
+        }
+
+        /* CVSS bar panels (light cream, screenshot style) */
+        .cvss-score-visual {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            gap: 10px;
+            margin-top: 14px;
+            padding: 12px;
+            background: #faf8f2;
+            border: 1px solid #d4cfc0;
+            border-radius: 4px;
+        }
+
+        .cvss-charts-row {
+            display: flex;
+            flex-wrap: wrap;
+            flex: 1;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .cvss-mini-panel {
+            flex: 1;
+            min-width: 100px;
+            max-width: 140px;
+            background: #fffef8;
+            border: 1px solid #c8c2b0;
+            padding: 6px 6px 8px;
+            font-size: 10px;
+        }
+
+        .cvss-mini-panel-big {
+            flex: 1;
+            min-width: 100px;
+            max-width: 335px;
+            background: #fffef8;
+            border: 1px solid #c8c2b0;
+            padding: 6px 6px 8px;
+            font-size: 10px;
+        }
+
+        .cvss-mini-panel-big h5 {
+            margin: 0 0 6px 0;
+            font-size: 9px;
+            font-weight: bold;
+            text-align: center;
+            color: #222;
+        }
+
+        .cvss-mini-panel h5 {
+            margin: 0 0 6px 0;
+            font-size: 9px;
+            font-weight: bold;
+            text-align: center;
+            color: #222;
+        }
+
+        .cvss-chart-area {
+            position: relative;
+            height: 100px;
+            border-left: 1px solid #999;
+            border-bottom: 1px solid #999;
+            margin: 4px 4px 18px 8px;
+            background: repeating-linear-gradient(to top,
+                    transparent,
+                    transparent 18px,
+                    rgba(0, 0, 0, 0.06) 18px,
+                    rgba(0, 0, 0, 0.06) 19px);
+        }
+
+        .cvss-chart-area::before {
+            content: "10\A 8\A 6\A 4\A 2\A 0";
+            position: absolute;
+            left: -22px;
+            top: 0;
+            height: 100%;
+            font-size: 8px;
+            line-height: 20px;
+            color: #666;
+            white-space: pre;
+            text-align: right;
+            width: 18px;
+        }
+
+        .cvss-chart-area-big {
+            position: relative;
+            height: 100px;
+            border-left: 1px solid #999;
+            border-bottom: 1px solid #999;
+            margin: 4px 4px 18px 8px;
+            background: repeating-linear-gradient(to top,
+                    transparent,
+                    transparent 18px,
+                    rgba(0, 0, 0, 0.06) 18px,
+                    rgba(0, 0, 0, 0.06) 19px);
+        }
+
+        .cvss-chart-area-big::before {
+            content: "H\A L\A N\A U";
+            position: absolute;
+            left: -22px;
+            top: 0;
+            height: 100%;
+            font-size: 8px;
+            line-height: 30px;
+            color: #666;
+            white-space: pre;
+            text-align: right;
+            width: 18px;
+        }
+
+        .cvss-bars-3 {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 100%;
+            padding: 0 4px 0 0;
+            gap: 4px;
+        }
+
+        .cvss-bar {
+            flex: 1;
+            max-width: 28px;
+            min-height: 4px;
+            border-radius: 2px 2px 0 0;
+            position: relative;
+            box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08);
+        }
+
+        .cvss-bar.green {
+            background: linear-gradient(180deg, #66bb6a, #43a047);
+        }
+
+        .cvss-bar.blue {
+            background: linear-gradient(180deg, #64b5f6, #1e88e5);
+        }
+
+        .cvss-bar.muted {
+            background: linear-gradient(180deg, #cfd8dc, #90a4ae);
+        }
+
+        .cvss-bar span.val {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+        }
+
+        .cvss-bar-labels {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 2px;
+            font-size: 8px;
+            color: #333;
+            text-align: center;
+        }
+
+        .cvss-bar-labels span {
+            flex: 1;
+        }
+
+        .cvss-summary-text {
+            flex: 0 0 160px;
+            font-size: 11px;
+            line-height: 1.45;
+            color: #222;
+            padding: 4px 6px;
+            border-left: 1px solid #c8c2b0;
+            min-width: 140px;
+        }
+
+        .cvss-summary-text strong {
+            display: block;
+            margin-top: 6px;
+        }
+
+        .cvss-summary-text strong:first-child {
+            margin-top: 0;
+        }
+
+        @media (max-width: 800px) {
+            .cvss-score-visual {
+                flex-direction: column;
+            }
+
+            .cvss-summary-text {
+                border-left: none;
+                border-top: 1px solid #c8c2b0;
+                padding-top: 10px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Watermark -->
+    <div class="watermark">
+        <img src="./okkk.png" alt="Security Astra Watermark">
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 style="font-size: 54px;">Scan Blueprint</h1>
+            <div class="logo">
+                <!-- <img src="Meridian-logo-blue.png" alt="Company Logo"> -->
+                <img src="https://edutech.blob.core.windows.net/site/SecurityAstra 2.svg" alt="Company Logo"
+                    style="width: 150px; height: auto;">
+
+            </div>
+        </div>
+        <p><strong>Scan Date:</strong> 02 February, 2026</p>
+        <p><strong>Target: </strong>onmeridian.com</p>
+
+        <h2>Summary</h2>
+
+        <!-- <p>Vulnerability Assessment and Penetration Testing (VAPT)is a comprehensive security evaluation process that identifies and mitigates potential vulnerabilities in an organization's IT infrastructure. The assessment phase involves scanning systems, networks, and applications to detect security weaknesses, while the penetration testing phase simulates real-world cyberattacks to exploit these vulnerabilities and assess their impact.</p> -->
+        <!-- <p>The purpose of this vulnerability assessment is to identify potential security risks in the target environment. The audit was conducted on  <strong>02 February, 2026</strong>.During the assessment, <strong>33 unique vulnerabilities</strong> were discovered, categorized by severity levels. Critical, high, and medium severity vulnerabilities were found across the target system, highlighting potential security risks that require immediate attention. This report provides a detailed breakdown of these findings, along with recommended remediation steps to enhance the overall security posture.</p> -->
+        This executive summary, prepared by <strong>Security Astra</strong>, highlights the key observations from the
+        security assessment of the target environment. The assessment focused on identifying existing vulnerabilities,
+        configuration weaknesses, and exposed services that could affect the overall security posture. It also evaluated
+        the presence of basic security mechanisms such as firewalls, secure headers, and asset visibility.<br><br>A
+        total of <strong>33 vulnerabilities were</strong> detected, which could be exploited to gain unauthorized access
+        or disrupt services. A <strong>Web Application Firewall (WAF)</strong> was detected, which helps in filtering
+        and monitoring HTTP traffic — a positive sign of perimeter security. Additionally, <strong>18
+            subdomains</strong> were found. Each should be managed carefully to avoid potential misuse or data
+        leakage.<br><br>In summary, while some security mechanisms are already in place, addressing the identified
+        issues will further enhance the environment’s resilience. It is recommended to apply patches, enforce secure
+        configurations, and conduct periodic reviews to maintain a strong security posture aligned with industry
+        standards.
+        <div class="sev-table">
+
+            <h2>Severity Breakdown</h2>
+            <table class="table">
+                <tr>
+                    <th>Vulnerability Risk</th>
+                    <th>Unique Count</th>
+                </tr>
+                <tr>
+                    <td>Critical Severity Vulnerabilities</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>High Severity Vulnerabilities</td>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <td>Medium Severity Vulnerabilities</td>
+                    <td>17</td>
+                </tr>
+                <tr>
+                    <td>Low Severity Vulnerabilities</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td><strong>Total Vulnerabilities</strong></td>
+                    <td><strong>33</strong></td>
+                </tr>
+            </table>
+        </div>
+        <p><strong>The domain resolved to 68.178.162.65 using the DNS server. </strong>A Web Application Firewall (WAF)
+            was detected, likely identified as <strong>Unknown WAF</strong>. The presence of a WAF indicates that the
+            application is actively employing security measures to monitor and restrict potentially malicious traffic,
+            which may influence the approach and scope of subsequent penetration testing activities.</p>
+        <h2>Target Information </h2>
+
+        <table border="1" cellpadding="6" cellspacing="0">
+            <tr>
+                <th>Category</th>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Domain Info</td>
+                <td>Domain Name</td>
+                <td>ONMERIDIAN.COM</td>
+            </tr>
+            <tr>
+                <td>Domain Info</td>
+                <td>Unicode Name</td>
+                <td>N.A.</td>
+            </tr>
+            <tr>
+                <td>Domain Info</td>
+                <td>Registry Handle</td>
+                <td>2517845328_DOMAIN_COM-VRSN</td>
+            </tr>
+            <tr>
+                <td>Registration Timeline</td>
+                <td>Registration Date</td>
+                <td>2020-04-23(07:55:32Z)</td>
+            </tr>
+            <tr>
+                <td>Registration Timeline</td>
+                <td>Last Modified</td>
+                <td>2025-01-22(12:07:36Z)</td>
+            </tr>
+            <tr>
+                <td>Registration Timeline</td>
+                <td>Expiry Date</td>
+                <td>2027-04-23(07:55:32Z)</td>
+            </tr>
+            <tr>
+                <td>Registration Timeline</td>
+                <td>RDAP DB Updated</td>
+                <td>2026-02-02(09:08:32Z)</td>
+            </tr>
+            <tr>
+                <td>Registrar / Registry</td>
+                <td>Registrar</td>
+                <td>N.A.</td>
+            </tr>
+            <tr>
+                <td>Registrar / Registry</td>
+                <td>Registry Platform</td>
+                <td>verisign.com</td>
+            </tr>
+            <tr>
+                <td>Security Status</td>
+                <td>Domain Locks</td>
+                <td>client delete prohibited, client transfer prohibited</td>
+            </tr>
+            <tr>
+                <td>DNS Infrastructure</td>
+                <td>Name Servers</td>
+                <td>NS-CLOUD-B1.GOOGLEDOMAINS.COM, NS-CLOUD-B4.GOOGLEDOMAINS.COM, NS-CLOUD-B2.GOOGLEDOMAINS.COM,
+                    NS-CLOUD-B3.GOOGLEDOMAINS.COM</td>
+            </tr>
+            <tr>
+                <td>DNS Security</td>
+                <td>DNSSEC Enabled</td>
+                <td>True</td>
+            </tr>
+        </table>
+
+        <!-- <h3>IP address </h3> The domain resolved to 68.178.162.65 using the DNS server. 
+        <h3>Waf Detected </h3> Unknown WAF -->
+        <h3>Sub-domain Enumeration</h3>
+        <p>Sub-domain enumeration helps identify all public-facing assets, including hidden or unmanaged subdomains,
+            which are often targeted by attackers for unauthorized access or data exposure.</p>
+        <div class="asset-grid">
+
+            <style>
+                .asset-card {
+                    display: inline-block;
+                    padding: 10px;
+                    margin: 5px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    background-color: #f9f9f9;
+                    transition: background 0.3s;
+                }
+
+                .asset-card:hover {
+                    background-color: #e3f2fd;
+                }
+
+                .asset-card a {
+                    text-decoration: none;
+                    color: inherit;
+                }
+
+                .hidden-subdomain {
+                    background-color: #eee;
+                    color: #999;
+                    font-style: italic;
+                    pointer-events: none;
+                    user-select: none;
+                }
+            </style>
+            <div class="asset-grid">
+
+                <div class="asset-card">
+                    <span class="icon">🔐</span> <a href="https://admin.onmeridian.com"
+                        target="_blank">admin.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🔧</span> <a href="https://api.marketplace.onmeridian.com"
+                        target="_blank">api.marketplace.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🔧</span> <a href="https://api.onmeridian.com"
+                        target="_blank">api.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://ats.onmeridian.com"
+                        target="_blank">ats.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://aws.onmeridian.com"
+                        target="_blank">aws.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://cbts.onmeridian.com"
+                        target="_blank">cbts.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://chatbot.onmeridian.com"
+                        target="_blank">chatbot.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://dynamics.onmeridian.com"
+                        target="_blank">dynamics.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://fwtrack.onmeridian.com"
+                        target="_blank">fwtrack.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://gws.onmeridian.com"
+                        target="_blank">gws.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">💼</span> <a href="https://intranet.onmeridian.com"
+                        target="_blank">intranet.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://marketplace.onmeridian.com"
+                        target="_blank">marketplace.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🔐</span> <a href="https://marketplaceadmin.onmeridian.com"
+                        target="_blank">marketplaceadmin.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://mwp.onmeridian.com"
+                        target="_blank">mwp.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://onmeridian.com" target="_blank">onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://partner.onmeridian.com"
+                        target="_blank">partner.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://surface.onmeridian.com"
+                        target="_blank">surface.onmeridian.com</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="icon">🌍</span> <a href="https://www.onmeridian.com"
+                        target="_blank">www.onmeridian.com</a>
+                </div>
+            </div>
+        </div>
+        <h3>Security Headers analysis</h3>
+
+        <table class='security-headers' style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+            <thead>
+                <tr>
+                    <th
+                        style='padding: 10px; border: 1px solid white; background-color: #D32F2F !important; color: white !important;'>
+                        Header
+                    </th>
+                    <th
+                        style='padding: 10px; border: 1px solid white; background-color: #D32F2F !important; color: white !important; text-align: right;'>
+                        Status <span
+                            style='margin-left: 10px; padding: 5px 10px; background: rgba(0,0,0,0.2); border-radius: 3px;'>F
+                            ❌</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid black;'>referrer-policy</td>
+                    <td style='padding: 10px; border: 1px solid black;'>❌ Not Present</td>
+                </tr>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid black;'>permissions-policy</td>
+                    <td style='padding: 10px; border: 1px solid black;'>❌ Not Present</td>
+                </tr>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid black;'>x-content-type-options</td>
+                    <td style='padding: 10px; border: 1px solid black;'>❌ Not Present</td>
+                </tr>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid black;'>content-security-policy</td>
+                    <td style='padding: 10px; border: 1px solid black;'>❌ Not Present</td>
+                </tr>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid black;'>strict-transport-security</td>
+                    <td style='padding: 10px; border: 1px solid black;'>❌ Not Present</td>
+                </tr>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid black;'>x-xss-protection</td>
+                    <td style='padding: 10px; border: 1px solid black;'>❌ Not Present</td>
+                </tr>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid black;'>x-frame-options</td>
+                    <td style='padding: 10px; border: 1px solid black;'>❌ Not Present</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Ports Exposed</h3>
+        <p>Exposed ports analysis identifies which network entry points are accessible from the internet, helping detect
+            unnecessary or risky services that could be exploited.</p>
+        <ul class="open-ports-list">
+            <style>
+                .port-hidden {
+                    background-color: #eee;
+                    color: #aaa;
+                    font-style: italic;
+                    user-select: none;
+                    pointer-events: none;
+                }
+            </style><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">22/tcp
+                (ssh)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">25/tcp
+                (smtp?)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">53/tcp
+                (domain)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">80/tcp
+                (http)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">110/tcp
+                (pop3)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">143/tcp
+                (imap)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">443/tcp
+                (ssl/http)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">465/tcp
+                (ssl/smtp)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">587/tcp
+                (smtp)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">993/tcp
+                (imaps?)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">995/tcp
+                (pop3s?)</span><span
+                style="display:inline-block;padding:5px 10px;margin:4px;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;">3306/tcp
+                (mysql)</span>
+
+        </ul>
+
+        <h2>🔍 DNS Configuration Status</h2>
+        <p>
+            The following tables display the DNS records found for this domain.
+            Each table explains what the record means and whether it is properly configured.
+            If any record is missing, it should be added to ensure optimal domain configuration.
+        </p>
+
+        <h3>A Records</h3>
+        <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+            <thead>
+                <tr>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Record
+                        Type</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Raw
+                        Output</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Meaning
+                    </th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>
+                        Configured?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>A Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>A onmeridian.com 68.178.162.65</td>
+                    <td style='padding: 8px; border: 1px solid black;'>A (Address) records map a domain name to an IPv4
+                        address.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style='font-style: italic;'>📝 A records ensure your domain points to the correct web server. If missing,
+            your website may not be accessible.</p>
+
+        <h3>MX Records</h3>
+        <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+            <thead>
+                <tr>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Record
+                        Type</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Raw
+                        Output</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Meaning
+                    </th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>
+                        Configured?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>MX Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX onmeridian-com.mail.protection.outlook.com
+                        52.101.145.0</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX (Mail Exchange) records define mail servers
+                        for email handling.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>MX Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX onmeridian-com.mail.protection.outlook.com
+                        52.101.144.3</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX (Mail Exchange) records define mail servers
+                        for email handling.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>MX Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX onmeridian-com.mail.protection.outlook.com
+                        52.101.144.0</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX (Mail Exchange) records define mail servers
+                        for email handling.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>MX Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX onmeridian-com.mail.protection.outlook.com
+                        52.101.145.2</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX (Mail Exchange) records define mail servers
+                        for email handling.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>MX Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX onmeridian-com.mail.protection.outlook.com
+                        2a01:111:f403:cc2d::</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX (Mail Exchange) records define mail servers
+                        for email handling.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>MX Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX onmeridian-com.mail.protection.outlook.com
+                        2a01:111:f403:cc2c::</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX (Mail Exchange) records define mail servers
+                        for email handling.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>MX Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX onmeridian-com.mail.protection.outlook.com
+                        2a01:111:f403:cc2c::1</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX (Mail Exchange) records define mail servers
+                        for email handling.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>MX Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX onmeridian-com.mail.protection.outlook.com
+                        2a01:111:f403:cc2d::1</td>
+                    <td style='padding: 8px; border: 1px solid black;'>MX (Mail Exchange) records define mail servers
+                        for email handling.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style='font-style: italic;'>📝 MX records direct emails to your mail server. If missing, emails won’t be
+            delivered properly.</p>
+
+        <h3>NS Records</h3>
+        <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+            <thead>
+                <tr>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Record
+                        Type</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Raw
+                        Output</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Meaning
+                    </th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>
+                        Configured?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>NS Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS ns-cloud-b1.googledomains.com 216.239.32.107
+                    </td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS (Name Server) records specify authoritative
+                        name servers.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>NS Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS ns-cloud-b1.googledomains.com
+                        2001:4860:4802:32::6b</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS (Name Server) records specify authoritative
+                        name servers.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>NS Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS ns-cloud-b2.googledomains.com 216.239.34.107
+                    </td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS (Name Server) records specify authoritative
+                        name servers.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>NS Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS ns-cloud-b2.googledomains.com
+                        2001:4860:4802:34::6b</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS (Name Server) records specify authoritative
+                        name servers.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>NS Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS ns-cloud-b3.googledomains.com 216.239.36.107
+                    </td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS (Name Server) records specify authoritative
+                        name servers.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>NS Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS ns-cloud-b3.googledomains.com
+                        2001:4860:4802:36::6b</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS (Name Server) records specify authoritative
+                        name servers.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>NS Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS ns-cloud-b4.googledomains.com 216.239.38.107
+                    </td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS (Name Server) records specify authoritative
+                        name servers.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>NS Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS ns-cloud-b4.googledomains.com
+                        2001:4860:4802:38::6b</td>
+                    <td style='padding: 8px; border: 1px solid black;'>NS (Name Server) records specify authoritative
+                        name servers.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style='font-style: italic;'>📝 NS records tell the internet which servers hold your domain’s DNS settings. If
+            missing, your domain may not resolve correctly.</p>
+
+        <h3>SOA Records</h3>
+        <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+            <thead>
+                <tr>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Record
+                        Type</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Raw
+                        Output</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Meaning
+                    </th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>
+                        Configured?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>SOA Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>SOA ns-cloud-b1.googledomains.com 216.239.32.107
+                    </td>
+                    <td style='padding: 8px; border: 1px solid black;'>SOA (Start of Authority) records contain admin
+                        and replication info.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>SOA Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>SOA ns-cloud-b1.googledomains.com
+                        2001:4860:4802:32::6b</td>
+                    <td style='padding: 8px; border: 1px solid black;'>SOA (Start of Authority) records contain admin
+                        and replication info.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style='font-style: italic;'>📝 SOA records define how DNS changes propagate. If missing, DNS updates might
+            not work properly.</p>
+
+        <h3>TXT Records</h3>
+        <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+            <thead>
+                <tr>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Record
+                        Type</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Raw
+                        Output</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Meaning
+                    </th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>
+                        Configured?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT onmeridian.com o920a5q2693aj6dj3dq55i064f
+                    </td>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT (Text) records hold miscellaneous text-based
+                        data (e.g., SPF, DKIM).</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT onmeridian.com v=spf1
+                        include:spf.protection.outlook.com -all</td>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT (Text) records hold miscellaneous text-based
+                        data (e.g., SPF, DKIM).</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT onmeridian.com
+                        google-site-verification=-8wVSqZtrV0pN8xLMQUfVnSvMezdq9OF_07GI67RXJQ</td>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT (Text) records hold miscellaneous text-based
+                        data (e.g., SPF, DKIM).</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT onmeridian.com
+                        ms-domain-verification=a0244216-4188-4c66-948b-579e1a23f511</td>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT (Text) records hold miscellaneous text-based
+                        data (e.g., SPF, DKIM).</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT onmeridian.com
+                        _dgwpz26a735j9fs9qcqbph16dvxy3m1</td>
+                    <td style='padding: 8px; border: 1px solid black;'>TXT (Text) records hold miscellaneous text-based
+                        data (e.g., SPF, DKIM).</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style='font-style: italic;'>📝 TXT records store important information like SPF (for email security). If
+            missing, your emails might go to spam.</p>
+
+        <h3>DNSKEY Records</h3>
+        <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+            <thead>
+                <tr>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Record
+                        Type</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Raw
+                        Output</th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>Meaning
+                    </th>
+                    <th style='padding: 8px; border: 1px solid white; background-color: #4CAF50; color: white;'>
+                        Configured?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style='padding: 8px; border: 1px solid black;'>DNSKEY Records</td>
+                    <td style='padding: 8px; border: 1px solid black;'>DNSKEYs:</td>
+                    <td style='padding: 8px; border: 1px solid black;'>DNSKEY records store cryptographic keys for
+                        DNSSEC validation.</td>
+                    <td style='padding: 8px; border: 1px solid black; font-weight: bold;'>✅ Yes</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style='font-style: italic;'>📝 DNSKEY records improve security by preventing DNS spoofing. If missing, your
+            domain may be vulnerable to attacks.</p>
+
+        <h3 class="vuln-section-title">Vulnerabilities</h3>
+        <!-- HSTS Missing Vulnerability -->
+        <div style="border-left: 5px solid #1c93bb; padding: 10px; margin-bottom: 10px; margin-top: 18px;">
+            <h3>
+                <span style="color: #1c93bb; font-weight: bold;">HSTS Missing From HTTPS Server </span>
+                <span style="color: #1c93bb;">(Severity: Medium)</span>
+            </h3>
+            <div class="cve-tables-wrap">
+                <h4><strong>Finding Details</strong></h4>
+                <table class="report-table-cve">
+                    <thead>
+                        <tr>
+                            <th>Plugin ID</th>
+                            <th>RFC</th>
+                            <th>Protocol / Reference</th>
+                            <th>Status Code</th>
+                            <th>Cache-Control</th>
+                            <th>Expires</th>
+                            <th>Max Age</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>142960</td>
+                            <td><span style="color:#e6a817; font-weight:bold;">RFC
+                                    -6797</span></td>
+                            <td>RFC 6797 (HTTP Strict Transport Security)</td>
+                            <td>403</td>
+                            <td>no-cache</td>
+                            <td>Thu, 01 Jan</td>
+                            <td>31536000</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Severity Visual -->
+                <!-- <div class="cvss-score-visual" style="margin-top:14px;">
+                    <div class="cvss-charts-row">
+                        <div class="cvss-mini-panel">
+                            <h5>Risk Level</h5>
+                            <div class="cvss-chart-area">
+                                <div class="cvss-bars-3" style="justify-content:center;">
+                                    <div class="cvss-bar"
+                                        style="height:50%; background: linear-gradient(180deg,#f5c842,#e6a817); max-width:40px;">
+                                        <span class="val">M</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cvss-bar-labels"><span>Medium</span></div>
+                        </div>
+
+                        <div class="cvss-mini-panel">
+                            <h5>Header Present?</h5>
+                            <div class="cvss-chart-area">
+                                <div class="cvss-bars-3" style="justify-content:center;">
+                                    <div class="cvss-bar"
+                                        style="height:10%; background: linear-gradient(180deg,#ef9a9a,#e53935); max-width:40px;">
+                                        <span class="val">✗</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cvss-bar-labels"><span>Missing</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cvss-summary-text">
+                        <strong>Strict-Transport-Security: MISSING</strong>
+                        Risk Factor: Medium<br>
+                        Protocol: HTTPS (RFC 6797)<br>
+                        <strong>Expected Header:</strong><br>
+                        Strict-Transport-Security:<br>
+                        max-age=31536000;<br>
+                        includeSubDomains
+                    </div>
+                </div> -->
+            </div>
+
+            <p><strong>Description:</strong> The remote HTTPS server does not send the
+                <code>Strict-Transport-Security</code> (HSTS) header, leaving users susceptible to SSL-stripping and
+                MitM attacks.
+            </p>
+
+            <p><strong>Analysis Result:</strong> The <code>Strict-Transport-Security</code> header was <strong>not
+                    found</strong> on <em>onmeridian.com</em>. Browsers will not enforce HTTPS, exposing users to
+                SSL-stripping attacks.</p>
+
+            <p><strong>Remediation:</strong></p>
+            <ul>
+                <li>Add the following response header to your HTTPS web server configuration:<br>
+                    <code>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</code>
+                </li>
+                <li>Set <code>max-age</code> to at least <strong>31536000</strong> (1 year) as recommended by RFC 6797.
+                </li>
+                <li>Include the <code>includeSubDomains</code> directive to protect all subdomains.</li>
+                <li>Submit the domain to the <a href="https://hstspreload.org" target="_blank">HSTS Preload List</a> for
+                    maximum protection.</li>
+                <li>Ensure all HTTP traffic is redirected to HTTPS before deploying HSTS.</li>
+                <li>Reference: <a
+                        href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security"
+                        target="_blank">MDN — Strict-Transport-Security</a></li>
+            </ul>
+
+            <div class="plugin-output-box">
+                <h4 class="plugin-header"><strong>Plugin Output</strong></h4>
+                <div class="plugin-content">
+                    <pre
+                        style="background-color: #96aec7; border-radius: 5px; margin: 10px; padding: 10px; white-space: pre-wrap; word-break: break-all; overflow-wrap: break-word;">
+142960 - HSTS Missing From HTTPS Server (RFC 6797)
+============================================================
+Original Target : https://onmeridian.com
+Final URL       : https://www.onmeridian.com:443/
+Status Code     : 403
+
+--- RESPONSE HEADERS ---
+Mime-Version: 1.0
+Content-Type: text/html
+Content-Length: 368
+Expires: Wed, 20 May 2026 06:17:58 GMT
+Cache-Control: max-age=0, no-cache, no-store
+Pragma: no-cache
+Date: Wed, 20 May 2026 06:17:58 GMT
+Connection: close
+Alt-Svc: h3=":443"; ma=93600
+Strict-Transport-Security: max-age=86400 ; includeSubDomains
+Set-Cookie: bm_ss=ab8e18ef4e; Secure; SameSite=None; Domain=.meesho.com; Path=/; HttpOnly; Max-Age=3600, bm_s=YAAQlnUsMdALzT+eAQAArKYIRAWypg82ZhVhbIaDl2vNzQe22bpXBiUpThjH3r11Jea2orGmEBuZSKJecG3wvZOfaF13CX74D/rzjV9SUJUwxquQUg6f37Mi+QOmXEe/VAj9vfqFBQ3OHH/ICX5aqaphylf7N4dByAYR/FEYCd7H23vC0HNFILBArvgDHm14QqXiG4gBaWuZ17D3ph9mbANv4cDZgzlvvuxHEtqhn9wew7g87flFX3RMpwvlwfpSq4rAQ1bQqSDlsSR0vGVZesto88komwNC3egBhvIL0iVd8mKJX8Uc+api2Nno8S11osL6SRJBdvCNDQ78YzYrwQyKiUcgYKSj5OLJElLl7stw5ZNV/ffepiT58slXYF2C8iZB2IeinxTPZyWAqjd4BKIYuSsvGMceSqYaroeg0wJr7sGUjPDCNRkcHhlSw7hDioqAu3/lSqCYjEkdntX2yBIIG58y66dz74ZFzRpB8Zk0RjToEdStLV+abCj2Js2pwylsZHQ3lKcmxhbNLBrn0tFniQWTUJW2ci6t7G3OYJ4GqkVocGmHnM/DEkG1yVwCEMbUi8JrYKrD6CBfekioCA==; Domain=.meesho.com; Path=/; Expires=Sat, 20 Jun 2026 06:17:58 GMT; Max-Age=2678400; Secure; HttpOnly, bm_so=30620E5A9BFF5F85AAEFBCD3CD15935FF4EFF0FB00B68030A250B2EB0C19AC5B~YAAQlnUsMdELzT+eAQAArKYIRAcVhXY0QA44/DZ5t2pUU5zG3/xREODaw8/8CydGK0pBrClxyPtrc9DPvbpxKApWFclDbff/6yS6IhKRmor2VfxDezP4hpK+rGctUns1IQQjLhjRSyvs6nmFmezZbVQZ9Yh1wwBF1Z4wEJjdQhnW2BtU6VRHogY5JuICWwHE3ykbyaqVxNFk4vS4CJMV08ZB0SSsB0EpFSYSGwt5dfASVv8z+9Oe3h7MA05gp6i+L/VPCS4kbPkfnAOgIqqm+DLlcPhD2zBq1JAeBSEwuMFzw/tMuiNVZiUH8FAI7hq7uKaf6sKQ8GYcA1GDN0vK75hjIQ8R+wAGxNoO4YJ0izBjW4G8aIXIMoPviMNi5w9azZfitkuBv9Kn6+Q8aBgRSotzoe4Z575UavlMbo45k6Gz2raVVbniEAoG41z9Plaio/t80UMuq6okZ5OSAvwnLEi3k4wRv6xBfiY6J6OCKhAm1ArqMppXdRjSQg==; Domain=.meesho.com; Path=/; Expires=Thu, 21 May 2026 06:17:58 GMT; Max-Age=86400; Secure
+
+--- ANALYSIS ---
+
+[+] HSTS HEADER FOUND
+Strict-Transport-Security: max-age=86400 ; includeSubDomains
+
+Risk Factor : INFO / LOW
+</pre>
+                </div>
+            </div>
+        </div>
+        <div style="border-left: 5px solid #ff4c4c; padding: 10px; margin-bottom: 10px;">
+            <h3>
+                <a href='https://vulners.com/cve/CVE-2023-38408' target='_blank'
+                    style='color: #ff4c4c; font-weight: bold;'>CVE-2023-38408</a>
+                <span style='color: #ff4c4c;'>(Severity: 9.8)</span>
+            </h3>
+            <div class="cve-tables-wrap">
+                <h4><strong>EPSS </strong>[Exploit Prediction Scoring System]</h4>
+                <div class="epss-dark-card">
+                    <div class="epss-header-row">
+                        <div><span class="lbl">EPSS version</span><span class="val">1.0</span></div>
+                        <div><span class="lbl">EPSS score</span><span class="val">0.67693</span></div>
+                        <div><span class="lbl">EPSS %</span><span class="val">0.98573</span></div>
+                        <div><span class="lbl">Date of publish</span><span class="val">2026-04-05</span></div>
+                    </div>
+                    <div class="epss-gauge-pair">
+                        <!-- <figure class="gauge-unit">
+                            <svg viewBox="0 0 200 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path class="gauge-arc-bg" d="M 30 100 A 70 70 0 0 1 170 100" />
+                                <text x="10" y="105" text-anchor="middle" fill="#666" font-size="14">0.0</text>
+                                <text x="190" y="105" text-anchor="middle" fill="#666" font-size="12">1.0</text>
+                                <g transform="translate(100,100)">
+                                    <line x1="0" y1="0" x2="62" y2="0" class="gauge-needle-epss"
+                                        transform="rotate(-60)" />
+                                    <circle cx="0" cy="0" r="4" class="gauge-cap" />
+                                </g>
+                            </svg>
+                            <figcaption>EPSS</figcaption>
+                        </figure> -->
+                        <!-- <figure class="gauge-unit">
+                            <svg viewBox="0 0 200 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path class="gauge-arc-bg" d="M 30 100 A 70 70 0 0 1 170 100" />
+                                <text x="10" y="105" text-anchor="middle" fill="#666" font-size="14">0.0</text>
+                                <text x="190" y="105" text-anchor="middle" fill="#666" font-size="12">1.0</text>
+                                <g transform="translate(100,100)">
+                                    <line x1="0" y1="0" x2="62" y2="0" class="gauge-needle-pct"
+                                        transform="rotate(-15)" />
+                                    <circle cx="0" cy="0" r="4" class="gauge-cap" />
+                                </g>
+                            </svg>
+                            <figcaption>Percentile</figcaption>
+                        </figure> -->
+                    </div>
+                </div>
+                <h4><strong>CVE details</strong></h4>
+                <table class="report-table-cve">
+                    <thead>
+                        <tr>
+                            <th>CVE published</th>
+                            <th>CWE ID</th>
+                            <th>CWE meaning</th>
+                            <th>CVSS vector string (all sources)</th>
+                            <th>References (all sources)</th>
+                            <th>Mitre ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2023-07-20</td>
+                            <td>CWE-428</td>
+                            <td>Unquoted search path</td>
+                            <td>CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</td>
+                            <td>cve@mitre.org</td>
+                            <td>T10249</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="cvss-score-visual">
+                    <div class="cvss-charts-row">
+                        <div class="cvss-mini-panel">
+                            <h5>Base Scores</h5>
+                            <div class="cvss-chart-area">
+                                <div class="cvss-bars-3">
+                                    <div class="cvss-bar green" style="height:89%"><span class="val">9.8</span></div>
+                                    <div class="cvss-bar green" style="height:59%"><span class="val">5.9</span></div>
+                                    <div class="cvss-bar green" style="height:78%"><span class="val">7.8</span></div>
+                                </div>
+                            </div>
+                            <div class="cvss-bar-labels"><span>Base</span><span>Impact</span><span>SRI</span></div>
+                        </div>
+                        <!-- <div class="cvss-mini-panel">
+                            <h5>Impact Score</h5>
+                            <div class="cvss-chart-area">
+                                <div class="cvss-bars-3" style="justify-content:center;">
+                                    <div class="cvss-bar blue" style="height:59%;max-width:40px;"><span
+                                            class="val">5.9</span></div>
+                                </div>
+                            </div>
+                            <div class="cvss-bar-labels"><span>Impact </span></div>
+                        </div> -->
+                        <div class="cvss-mini-panel">
+                            <h5>SRI Score</h5>
+                            <div class="cvss-chart-area">
+                                <div class="cvss-bars-3">
+                                    <div class="cvss-bar muted" style="height:22%">
+                                        <span class="val">2</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cvss-bar-labels">
+                                <span>Impact</span>
+                            </div>
+                        </div>
+
+
+
+                        <!-- CVSS STRING PANEL (WIDER + CLEAN) -->
+                        <div class="cvss-mini-panel-big">
+                            <h5>CVSS String</h5>
+
+                            <div class="cvss-chart-area-big cvss-vector">
+                                <div class="cvss-bars-3">
+
+                                    <div class="cvss-bar blue" style="height:55%">
+                                        <span class="val">L</span>
+                                    </div>
+
+                                    <div class="cvss-bar muted" style="height:28%">
+                                        <span class="val">N</span>
+                                    </div>
+
+                                    <div class="cvss-bar muted" style="height:28%">
+                                        <span class="val">N</span>
+                                    </div>
+
+                                    <div class="cvss-bar green" style="height:90%">
+                                        <span class="val">H</span>
+                                    </div>
+
+                                    <div class="cvss-bar green" style="height:90%">
+                                        <span class="val">H</span>
+                                    </div>
+
+                                    <div class="cvss-bar green" style="height:90%">
+                                        <span class="val">H</span>
+                                    </div>
+
+                                    <div class="cvss-bar muted" style="height:28%">
+                                        <span class="val">N</span>
+                                    </div>
+
+                                    <div class="cvss-bar muted" style="height:2%">
+                                        <span class="val">U</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="cvss-bar-labels">
+                                <span>AC</span><span>PR</span><span>UI</span><span>C</span><span>I</span><span>A</span><span>AV</span><span>S</span>
+                            </div>
+                        </div>
+                        <!-- <div class="cvss-mini-panel">
+                            <h5>Overall</h5>
+                            <div class="cvss-chart-area">
+                                <div class="cvss-bars-3" style="justify-content:center;">
+                                    <div class="cvss-bar green" style="height:60%;max-width:40px;"><span
+                                            class="val">6</span></div>
+                                </div>
+                            </div>
+                            <div class="cvss-bar-labels"><span>Overall</span></div>
+                        </div> -->
+                    </div>
+                    <div class="cvss-summary-text">
+                        <strong>CVSS Base Score: 9.8</strong>
+                        Impact Subscore: 5.9<br>
+                        Exploitability Subscore: 3.9<br>
+                        <strong>CVSS Temporal Score: 2.8</strong><br>
+                        CVSS Environmental Score: 0.3<br>
+                        Modified Impact Subscore: 2<br>
+                        <strong>Overall CVSS Score: 9.8</strong>
+                    </div>
+                </div>
+            </div>
+            <p><strong>Description:</strong> The PKCS#11 feature in ssh-agent in OpenSSH before 9.3p2 has an
+                insufficiently<br>trustworthy search path, leading to remote code execution if an agent is<br>forwarded
+                to an attacker-controlled system. (Code in /usr/lib is not necessarily<br>safe for loading into
+                ssh-agent.) NOTE: this issue exists because of an<br>incomplete fix for CVE-2016-10009.</p>
+            <p><strong>Remediation:</strong></p>
+            <ul>
+                <li>Apply the latest security patches to mitigate known vulnerabilities.</li>
+                <li>Enable application whitelisting to prevent unauthorized code execution.</li>
+                <li>Use intrusion detection systems (IDS) to monitor suspicious activity.</li>
+                <li>https://fortiguard.fortinet.com/psirt/FG-IR-25-006</li>
+            </ul>
+
+            <div class="plugin-output-box">
+                <h4 class="plugin-header"><strong>Plugin Output</strong></h4>
+                <div class="plugin-content">
+                    <pre style="background-color: #96aec7; border-radius: 5px; margin: 10px; padding: 10px;">
+    Installed version : OpenSSH_8.9p1
+    Fixed version     : OpenSSH_9.3p2
+    
+    Agent forwarding detected : Enabled
+    PKCS#11 support           : Enabled
+    
+    Result: VULNERABLE
+</pre>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+        <h2>Conclusion</h2>
+
+        The security assessment conducted by Security Astra has been successfully completed. The scan identified 33
+        security vulnerabilities (CVEs) that pose potential risks. It is highly recommended to review these
+        vulnerabilities and apply necessary patches or mitigations immediately. A Web Application Firewall (WAF) was
+        detected, which provides an additional security layer. A total of 18 subdomains were discovered, which should be
+        monitored for potential security risks. Regular security assessments are recommended to maintain a strong
+        security posture.
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div class="footer-container">
+            <footer>
+                <p>Generated by <strong>Security Astra</strong> | Secure your business with our automated security
+                    scanning.</p>
+                <p><a href="https://securityastra.com" style="color: #f1c40f; text-decoration: none;">Get your own
+                        security scan today!</a></p>
+            </footer>
+
+            <div class="stamp-container">
+                <img src="https://edutech.blob.core.windows.net/site/stamp.png" alt="Official Stamp" class="stamp">
+                <p>Verified and Tested</p>
+            </div>
+        </div>
+        <!-- <table>
+            <tr>
+                <th>Vulnerability</th>
+                <th>Severity</th>
+                <th>Details</th>
+            </tr>
+            <tr>
+                <td>SQL Injection</td>
+                <td class="critical">Critical</td>
+                <td><span class="toggle" onclick="toggleDetails(0)">View</span></td>
+            </tr>
+            <tr class="details">
+                <td colspan="3">Found in login.php, potential data exposure.</td>
+            </tr>
+            <tr>
+                <td>Cross-Site Scripting</td>
+                <td class="high">High</td>
+                <td><span class="toggle" onclick="toggleDetails(1)">View</span></td>
+            </tr>
+            <tr class="details">
+                <td colspan="3">Reflected XSS in search bar.</td>
+            </tr>
+        </table> -->
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const ul = document.querySelector(".open-ports-list");
+            if (ul) {
+                let text = ul.innerHTML.trim();
+
+                // Split by comma and create spans
+                let ports = text.split(",").map(port => `<span class="port-capsule">${port.trim()}</span>`);
+
+                // Replace the raw text with formatted capsules
+                ul.innerHTML = ports.join("");
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const rows = document.querySelectorAll(".sev-table tr"); // Select all rows
+
+            rows.forEach(tr => {
+                let firstCell = tr.querySelector("td:first-child"); // First column
+                let allCells = tr.querySelectorAll("td"); // All columns
+
+                if (firstCell) {
+                    let text = firstCell.textContent.trim().toLowerCase();
+                    let bgColor = "";
+                    let textColor = "white"; // Default text color
+
+                    // Set color based on severity
+                    if (text.includes("critical")) {
+                        bgColor = "#e74c3c"; // Red
+                    } else if (text.includes("high")) {
+                        bgColor = "#e67e22"; // Orange
+                    } else if (text.includes("medium")) {
+                        bgColor = "#f1c40f"; // Softer Yellow
+                        textColor = "black"; // Ensure readability
+                    } else if (text.includes("low")) {
+                        bgColor = "#2ecc71"; // Green
+                    }
+
+                    // Apply background color to all cells in the row
+                    allCells.forEach(td => {
+                        td.style.backgroundColor = bgColor;
+                        td.style.color = textColor; // Apply text color dynamically
+                    });
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>
