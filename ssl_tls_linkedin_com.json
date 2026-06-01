@@ -1,0 +1,22 @@
+{
+  "target": "linkedin.com:443",
+  "tls_versions": {
+    "TLSv1": "rejected",
+    "TLSv1.1": "rejected",
+    "TLSv1.2": "supported",
+    "TLSv1.3": "supported"
+  },
+  "cipher": [
+    "TLS_AES_256_GCM_SHA384",
+    "TLSv1.3",
+    256
+  ],
+  "summary": {
+    "CRITICAL": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0,
+    "INFO": 0
+  },
+  "findings": []
+}
