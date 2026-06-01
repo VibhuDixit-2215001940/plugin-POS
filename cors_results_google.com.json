@@ -1,0 +1,47 @@
+{
+  "target": "https://google.com",
+  "results": [
+    {
+      "test": "Wildcard Origin (Access-Control-Allow-Origin: *)",
+      "risk": "MEDIUM",
+      "status": "PASS",
+      "detail": "ACAO is not wildcard. Value: 'Not Present'"
+    },
+    {
+      "test": "Reflected Origin (Origin header echoed back without validation)",
+      "risk": "HIGH",
+      "status": "PASS",
+      "detail": "Origin not reflected. ACAO: 'Not Present'"
+    },
+    {
+      "test": "Null Origin Trust (Origin: null accepted)",
+      "risk": "HIGH",
+      "status": "PASS",
+      "detail": "Null origin not trusted. ACAO: 'Not Present'"
+    },
+    {
+      "test": "Subdomain Trust Check (crafted: https://evil.google.com)",
+      "risk": "MEDIUM",
+      "status": "PASS",
+      "detail": "Crafted subdomain not trusted. ACAO: 'Not Present'"
+    },
+    {
+      "test": "HTTP Origin on HTTPS Endpoint (http://google.com)",
+      "risk": "MEDIUM",
+      "status": "PASS",
+      "detail": "HTTP origin not trusted. ACAO: 'Not Present'"
+    },
+    {
+      "test": "Vary: Origin Header (Cache Poisoning Prevention)",
+      "risk": "LOW",
+      "status": "PASS",
+      "detail": "Not applicable \u2014 CORS not active or wildcard used."
+    },
+    {
+      "test": "Preflight Allowed Methods (OPTIONS request)",
+      "risk": "INFO",
+      "status": "INFO",
+      "detail": "No CORS preflight response or no Access-Control-Allow-Methods header."
+    }
+  ]
+}
