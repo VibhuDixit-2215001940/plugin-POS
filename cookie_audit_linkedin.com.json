@@ -1,0 +1,113 @@
+{
+  "target": "https://linkedin.com",
+  "cookies_audited": 5,
+  "summary": {
+    "CRITICAL": 0,
+    "HIGH": 2,
+    "MEDIUM": 2,
+    "LOW": 9,
+    "INFO": 2
+  },
+  "findings": [
+    {
+      "cookie": "JSESSIONID",
+      "findings": [
+        {
+          "check": "Missing HttpOnly",
+          "risk": "HIGH",
+          "detail": "Cookie 'JSESSIONID' lacks HttpOnly. Sensitive cookie \u2014 JavaScript can read this via document.cookie (XSS escalation risk)."
+        },
+        {
+          "check": "SameSite=None (Cross-site cookie)",
+          "risk": "LOW",
+          "detail": "Cookie 'JSESSIONID' is explicitly cross-site (SameSite=None; Secure). Verify this is intentional \u2014 third-party/embed use case only."
+        },
+        {
+          "check": "Overly Broad Domain Scope",
+          "risk": "LOW",
+          "detail": "Cookie 'JSESSIONID' has Domain='.www.linkedin.com' (leading dot). Cookie is sent to all subdomains. If a subdomain is compromised, attacker can read/set this cookie."
+        },
+        {
+          "check": "Session Cookie (No Expiry)",
+          "risk": "INFO",
+          "detail": "Cookie 'JSESSIONID' has no Expires/Max-Age \u2014 it's a session cookie. Deleted when browser closes. Acceptable for auth cookies; risky if user keeps browser open indefinitely."
+        }
+      ]
+    },
+    {
+      "cookie": "lang",
+      "findings": [
+        {
+          "check": "Missing HttpOnly",
+          "risk": "MEDIUM",
+          "detail": "Cookie 'lang' lacks HttpOnly. JavaScript can read this via document.cookie (XSS escalation risk)."
+        },
+        {
+          "check": "SameSite=None (Cross-site cookie)",
+          "risk": "LOW",
+          "detail": "Cookie 'lang' is explicitly cross-site (SameSite=None; Secure). Verify this is intentional \u2014 third-party/embed use case only."
+        },
+        {
+          "check": "Session Cookie (No Expiry)",
+          "risk": "INFO",
+          "detail": "Cookie 'lang' has no Expires/Max-Age \u2014 it's a session cookie. Deleted when browser closes. Acceptable for auth cookies; risky if user keeps browser open indefinitely."
+        }
+      ]
+    },
+    {
+      "cookie": "bcookie",
+      "findings": [
+        {
+          "check": "Missing HttpOnly",
+          "risk": "MEDIUM",
+          "detail": "Cookie 'bcookie' lacks HttpOnly. JavaScript can read this via document.cookie (XSS escalation risk)."
+        },
+        {
+          "check": "SameSite=None (Cross-site cookie)",
+          "risk": "LOW",
+          "detail": "Cookie 'bcookie' is explicitly cross-site (SameSite=None; Secure). Verify this is intentional \u2014 third-party/embed use case only."
+        },
+        {
+          "check": "Overly Broad Domain Scope",
+          "risk": "LOW",
+          "detail": "Cookie 'bcookie' has Domain='.linkedin.com' (leading dot). Cookie is sent to all subdomains. If a subdomain is compromised, attacker can read/set this cookie."
+        }
+      ]
+    },
+    {
+      "cookie": "bscookie",
+      "findings": [
+        {
+          "check": "SameSite=None (Cross-site cookie)",
+          "risk": "LOW",
+          "detail": "Cookie 'bscookie' is explicitly cross-site (SameSite=None; Secure). Verify this is intentional \u2014 third-party/embed use case only."
+        },
+        {
+          "check": "Overly Broad Domain Scope",
+          "risk": "LOW",
+          "detail": "Cookie 'bscookie' has Domain='.www.linkedin.com' (leading dot). Cookie is sent to all subdomains. If a subdomain is compromised, attacker can read/set this cookie."
+        }
+      ]
+    },
+    {
+      "cookie": "lidc",
+      "findings": [
+        {
+          "check": "Missing HttpOnly",
+          "risk": "HIGH",
+          "detail": "Cookie 'lidc' lacks HttpOnly. Sensitive cookie \u2014 JavaScript can read this via document.cookie (XSS escalation risk)."
+        },
+        {
+          "check": "SameSite=None (Cross-site cookie)",
+          "risk": "LOW",
+          "detail": "Cookie 'lidc' is explicitly cross-site (SameSite=None; Secure). Verify this is intentional \u2014 third-party/embed use case only."
+        },
+        {
+          "check": "Overly Broad Domain Scope",
+          "risk": "LOW",
+          "detail": "Cookie 'lidc' has Domain='.linkedin.com' (leading dot). Cookie is sent to all subdomains. If a subdomain is compromised, attacker can read/set this cookie."
+        }
+      ]
+    }
+  ]
+}
