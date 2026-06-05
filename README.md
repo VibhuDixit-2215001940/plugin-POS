@@ -1,272 +1,212 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/>
-  <img src="https://img.shields.io/badge/Bash-Script-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white" alt="Bash"/>
-  <img src="https://img.shields.io/badge/Security-Toolkit-EF4444?style=for-the-badge&logo=hackthebox&logoColor=white" alt="Security"/>
+  <img src="https://img.shields.io/badge/Security-Scanner-EF4444?style=for-the-badge&logo=hackthebox&logoColor=white" alt="Security"/>
+  <img src="https://img.shields.io/badge/Architecture-Plugin--Based-0052CC?style=for-the-badge&logo=architecture" alt="Architecture"/>
   <img src="https://img.shields.io/badge/License-MIT-F59E0B?style=for-the-badge" alt="License"/>
 </p>
 
-<h1 align="center">🛡️ WebSec Headers Toolkit</h1>
+<h1 align="center">🛡️ Nessus-Style Plugin Vulnerability Scanner</h1>
 
 <p align="center">
-  <b>A modular collection of offensive security scripts for HTTP header analysis, server fingerprinting, port scanning, and subdomain detection.</b>
+  <b>A modular, dependency-driven web vulnerability scanner architecture featuring an dynamic plugin auto-loader, centralized knowledge base (KB), standardized evidence collector, and version-to-CVE mapper.</b>
 </p>
 
 <p align="center">
-  <i>Analyze. Detect. Report.</i>
+  <i>Identify. Validate. Collect Proof. Report.</i>
 </p>
 
 ---
 
 ## 📖 Overview
 
-**WebSec Headers Toolkit** is a curated suite of Python and Bash scripts designed for **penetration testers**, **bug bounty hunters**, and **security auditors**. Each script targets a specific security header or reconnaissance task, making it easy to run individual checks or combine them for a comprehensive web application security assessment.
-
-The toolkit inspects HTTP response headers for common misconfigurations and missing security policies — vulnerabilities frequently flagged by tools like **Nessus**, **Burp Suite**, and **OWASP ZAP**.
-
----
-
-## ✨ Features
-
-| Category | Script | Description | Risk Level |
-|:---:|:---|:---|:---:|
-| 🔒 | `hsts.py` | Checks for **HSTS** (`Strict-Transport-Security`) header presence | Medium |
-| 🛡️ | `csp.py` | Validates **Content-Security-Policy** header configuration | High |
-| 🖼️ | `xframe.py` | Detects missing **X-Frame-Options** (clickjacking protection) | Medium |
-| 🧬 | `xcontent.py` | Checks **X-Content-Type-Options** (`nosniff`) header | Low |
-| ⚔️ | `xxss.py` | Verifies **X-XSS-Protection** header status | Low |
-| 📜 | `referrer.py` | Inspects **Referrer-Policy** header configuration | Low |
-| 🔐 | `permissions.py` | Audits **Permissions-Policy** (formerly Feature-Policy) header | Low |
-| 🌐 | `http_methods_allowed.py` | Enumerates allowed **HTTP methods** via OPTIONS request | Medium |
-| 🖥️ | `server_detect.py` | **Server fingerprinting** via HTTP headers + raw banner grab | Info |
-| 🌍 | `subdomainDetector.py` | Identifies whether a URL is a **subdomain** or main domain | Info |
-| 🔍 | `port_scanner.sh` | Full-featured **port scanner** using Nmap / Masscan workflows | — |
+This repository hosts a **Nessus-Style Plugin-Based Vulnerability Scanner**. Moving away from hardcoded security checking scripts, this framework implements a modern security tool pipeline:
+1. **Dynamic Plugin Auto-Discovery:** Scans and imports all plugins on launch. Adding a new check is as simple as dropping a `.py` file into the `plugins/` folder.
+2. **Centralized Knowledge Base (KB):** Caches information gathered by reconnaissance and fingerprinting plugins to avoid sending redundant HTTP requests.
+3. **Nessus-Style Dependency Resolution:** Checks KB requirements and skips plugins target-incompatible with the active system, ensuring high-speed scanning (e.g. skipping Apache-specific CVE checks on a IIS target).
+4. **Standardized Evidence Collection Layer:** Saves raw HTTP requests, response headers, and partial response bodies as proof of vulnerabilities for audit reporting.
+5. **Data-Driven Signatures & Payloads:** Detection patterns, SQL error signatures, XSS/LFI/Command injection payloads, and target paths are loaded from external configuration files (`.yaml`, `.json`, `.txt`) rather than being hardcoded in code.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Project Architecture
 
 ```
 HEADERS/
 │
-├── 🔍 Reconnaissance
-│   ├── server_detect.py        # Server type & version fingerprinting
-│   ├── subdomainDetector.py    # Subdomain vs main domain classifier
-│   └── port_scanner.sh         # Nmap/Masscan port & service discovery
+├── 🧠 core/                    # Core Scanning Engine
+│   ├── plugin_base.py          # Base plugin interface and PluginResult structures
+│   ├── knowledge_base.py       # Thread-safe in-memory key-value store & history log
+│   ├── engine.py               # Orchestrator (auto-discovery, dependencies, parallel worker pool)
+│   ├── evidence.py             # File-based evidence saver (request/response/metadata logger)
+│   ├── cve_mapper.py           # Software version parser and CVE matching engine
+│   ├── reporter.py             # Dark-mode styled HTML & structured JSON report generator
+│   └── data_loader.py          # Loader helper for external assets (YAML/JSON/wordlists)
 │
-├── 🛡️ Security Header Checks
-│   ├── hsts.py                 # HSTS (RFC 6797) compliance check
-│   ├── csp.py                  # Content-Security-Policy validation
-│   ├── xframe.py               # X-Frame-Options (anti-clickjacking)
-│   ├── xcontent.py             # X-Content-Type-Options check
-│   ├── xxss.py                 # X-XSS-Protection check
-│   ├── referrer.py             # Referrer-Policy check
-│   └── permissions.py          # Permissions-Policy check
+├── 🛡️ plugins/                 # Auto-Discovered Scanner Plugins
+│   ├── fingerprint/            # Reconnaissance & technology classifiers
+│   │   ├── server_version.py   # Web server banner detection & version extractor
+│   │   └── technology_detect.py# CMS (WordPress, Drupal, etc.) & framework detection
+│   ├── http_headers/           # HTTP Header auditing plugins
+│   │   ├── missing_hsts.py     # HSTS implementation checker
+│   │   ├── missing_csp.py      # Content-Security-Policy structural evaluator
+│   │   ├── security_headers.py # XFO, X-Content-Type, Referrer-Policy, and OPTIONS method checker
+│   │   └── cors_misconfig.py   # CORS reflected origin & null origin vulnerability tester
+│   ├── session/                # Cookie flag & session verification
+│   │   └── cookie_flags.py     # HttpOnly, Secure, & SameSite cookie audit tool
+│   ├── discovery/              # File and panel path scanner
+│   │   └── default_files.py    # Multi-threaded URL path finder using scoring algorithms
+│   ├── injection/              # Active vulnerability validation
+│   │   ├── sqli_error.py       # Error-based SQL injection vulnerability scanner
+│   │   ├── xss_reflected.py    # Reflected XSS auditor
+│   │   └── lfi_check.py        # Local File Inclusion & Open Redirect validator
+│   └── cve/                    # Version correlation plugins
+│       └── version_cve_check.py# Software version mapping to NVD CVE entries
 │
-├── 🌐 HTTP Analysis
-│   ├── http_methods_allowed.py # HTTP methods enumeration (OPTIONS)
-│   └── infoDisclosure.py       # Information disclosure scanner (WIP)
+├── 📊 data/                    # External Database & Payload Files
+│   ├── cve_database.json       # Version correlation CVE definitions
+│   ├── signatures.yaml         # Server header patterns & tech signatures
+│   ├── payloads.yaml           # SQLi, XSS, LFI, CMDi, and Redirect payloads
+│   └── wordlists/
+│       └── common_paths.txt    # Directory discovery wordlist (150+ paths)
 │
-├── 📊 Reporting
-│   └── WebScan_Onmeridian.html # Generated HTML scan report
+├── 📊 findings/                # Scan Output Artifacts (generated per scan)
+│   └── <target>_<timestamp>/
+│       ├── kb.json             # Serialized knowledge base configuration
+│       ├── results.json        # Compiled results output
+│       ├── report.html         # Rich dark-mode HTML report
+│       ├── report.json         # Master findings list
+│       └── evidence/           # Subfolders containing raw request.txt and response.txt per finding
 │
-└── 📄 Config
-    ├── .gitignore
-    └── README.md
+├── 🚀 main_scanner.py          # CLI entry point
+└── 📄 README.md                # System documentation
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🚀 How to Run the Scanner (Scanner Run Guide)
 
-### Prerequisites
+### 1. Installation & Prerequisites
+
+This project uses Python 3.x. Install the required Python packages first:
 
 ```bash
-# Python 3.x with pip
-python --version
+# Clone or navigate to the directory
+cd HEADERS
 
-# Install Python dependencies
-pip install requests tldextract
-
-# For port_scanner.sh (Linux only)
-sudo apt install nmap masscan libxml2-utils
+# Install python dependencies
+pip install requests pyyaml packaging
 ```
 
-### Run Individual Checks
+### 2. Basic Scan
+
+To run a scan against a target, execute `main_scanner.py`. If no target is specified, it will interactively prompt you for one:
 
 ```bash
-# 🔒 Check HSTS header
-python hsts.py
+# Run interactively
+python main_scanner.py
 
-# 🛡️ Check Content-Security-Policy
-python csp.py
-
-# 🖼️ Check X-Frame-Options
-python xframe.py
-
-# 🖥️ Server fingerprinting + raw banner grab
-python server_detect.py
-
-# 🌍 Subdomain detection
-python subdomainDetector.py
-
-# 🌐 Enumerate allowed HTTP methods
-python http_methods_allowed.py
+# Or specify target directly via CLI
+python main_scanner.py -t example.com
 ```
 
-### Port Scanner (Bash)
+### 3. Advanced CLI Configuration
+
+The CLI supports filtering plugins by family, configuring parallel execution speed, and targeting custom output locations:
 
 ```bash
-# Basic usage — scan a single target
-./port_scanner.sh -t 192.168.1.1
+# Run ONLY fingerprinting and HTTP header checks
+python main_scanner.py -t example.com -f fingerprint,http_headers
 
-# Scan specific ports with masscan → nmap workflow
-./port_scanner.sh -t 10.0.0.1 -p 80,443,8080 -w masscan2nmap
+# Adjust speed using thread workers (default is 20)
+python main_scanner.py -t example.com -w 40
 
-# Scan multiple targets from a file
-./port_scanner.sh -l targets.txt -o ./results
-
-# Install dependencies automatically
-./port_scanner.sh --setup
+# Force standard CLI output styling on Windows console encodings
+python -X utf8 main_scanner.py -t example.com
 ```
+
+### 4. Viewing Results & Reports
+
+Once a scan finishes, a target-specific directory is created in the `findings/` folder:
+
+- **Interactive HTML Report:** Open the generated `report.html` in your web browser. It displays findings sorted by severity (Critical, High, Medium, Low, Info) featuring confidence scores and remediation.
+- **Evidence Files:** Under `findings/<target>_<timestamp>/evidence/<plugin_name>/` you will find:
+  - `request.txt`: The exact raw HTTP request sent.
+  - `response.txt`: The exact raw HTTP response headers and body payload returned.
+  - `evidence.json`: Contextual finding parameters.
+- **Knowledge Base (KB):** Inspect `kb.json` to view the variables and version history populated during discovery.
 
 ---
 
-## 🔬 How Each Script Works
+## 🛠️ Adding New Checks (No Code Changes Required)
 
-### Security Header Checkers
+Since the scanner separates plugin logic from vulnerability payloads and signatures, you don't need to rewrite code to update the detection databases:
 
-All header-checking scripts (`hsts.py`, `csp.py`, `xframe.py`, `xcontent.py`, `xxss.py`, `referrer.py`, `permissions.py`) follow a consistent workflow:
-
-```
-┌─────────────────────┐
-│   User enters URL   │
-└─────────┬───────────┘
-          ▼
-┌─────────────────────┐
-│ Normalize URL scheme │ ──▶ Prepends https:// if missing
-└─────────┬───────────┘
-          ▼
-┌─────────────────────┐
-│  Send HTTP request   │ ──▶ Follows redirects, 10s timeout
-└─────────┬───────────┘
-          ▼
-┌─────────────────────┐
-│ Inspect response     │
-│ headers for target   │
-│ security header      │
-└─────────┬───────────┘
-          ▼
-┌─────────────────────┐
-│ Report findings +    │
-│ assign risk factor   │
-└─────────────────────┘
+### Adding New Vulnerability Payloads
+Open `data/payloads.yaml` and add your payloads under the appropriate category:
+```yaml
+sqli:
+  error_based:
+    - "'"
+    - "'; SELECT pg_sleep(5)--"
 ```
 
-### Server Fingerprinting (`server_detect.py`)
-
-Uses a **two-phase approach**:
-1. **HTTP-level detection** — Extracts `Server` and `X-Powered-By` headers via `requests`
-2. **Raw socket banner grab** — Opens a TCP/SSL socket and sends a raw `HEAD` request to capture low-level server banners (`Server`, `Via`, `X-Powered-By`)
-
-### Port Scanner (`port_scanner.sh`)
-
-Supports two discovery workflows:
-
-| Workflow | Phase 1 (Port Discovery) | Phase 2 (Service Discovery) |
-|:---|:---|:---|
-| `nmap2nmap` | Nmap SYN scan (`-sS`) | Nmap aggressive scan (`-A`) |
-| `masscan2nmap` | Masscan high-speed scan | Nmap aggressive scan (`-A`) |
-
-Key features:
-- ✅ IP validation with octet range checking
-- ✅ Port range validation (0–65535)
-- ✅ Skips re-scanning if previous results exist
-- ✅ Supports single target (`-t`) or target list (`-l`)
-- ✅ XML output parsing via `xmllint`
-- ✅ Automatic privilege escalation via `sudo`
-
----
-
-## ⚠️ Risk Factor Reference
-
-| Risk Level | Meaning | Headers |
-|:---:|:---|:---|
-| 🔴 **HIGH** | Critical misconfiguration, actively exploitable | Missing CSP |
-| 🟠 **MEDIUM** | Significant risk, should be remediated | Missing HSTS, X-Frame-Options, dangerous HTTP methods |
-| 🟡 **LOW** | Minor risk, best-practice recommendation | Missing X-Content-Type-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy |
-| 🔵 **INFO** | Informational finding, no direct risk | Server fingerprinting, subdomain detection |
-
----
-
-## 📦 Dependencies
-
-| Package | Purpose | Install |
-|:---|:---|:---|
-| `requests` | HTTP requests with session handling | `pip install requests` |
-| `tldextract` | Domain/subdomain extraction | `pip install tldextract` |
-| `nmap` | Network port & service scanning | `sudo apt install nmap` |
-| `masscan` | High-speed port scanning | `sudo apt install masscan` |
-| `libxml2-utils` | XML output parsing (`xmllint`) | `sudo apt install libxml2-utils` |
-
----
-
-## 🧪 Example Output
-
-```
-HTTP Server Type and Version Detector
-=====================================
-
-Enter Domain or URL: example.com
-
-[+] Target Host : example.com
-[+] Scheme      : http
-
-[+] Final URL      : https://example.com/
-[+] HTTP Status    : 200
-[+] Server Header  : ECS (dcb/7F37)
-[+] X-Powered-By   : Not Found
-
-[+] Raw HTTP Response:
-------------------------------------------------------------
-Server: ECS (dcb/7F37)
-------------------------------------------------------------
+### Adding New Web Technologies & Server Headers
+Open `data/signatures.yaml` to include new regexes or html identification keywords:
+```yaml
+technology_patterns:
+  wordpress:
+    html_patterns:
+      - "wp-content"
+    version_regex: "WordPress ([0-9.]+)"
 ```
 
----
+### Adding New CVE Definitions
+Open `data/cve_database.json` and append CVE objects specifying target software and range bounds:
+```json
+"nginx": [
+  {
+    "cve": "CVE-2022-41741",
+    "affected_versions": {"min": "1.1.3", "max": "1.23.1"},
+    "severity": "high",
+    "description": "Memory corruption in nginx mp4 module"
+  }
+]
+```
 
-## 🤝 Contributing
+### Writing a Custom Python Plugin
+To write a new plugin, simply create a new `.py` file inside `plugins/<family>/`. Inherit from `PluginBase` and override `detect`:
 
-Contributions are welcome! Here are some ways you can help:
+```python
+from core.plugin_base import PluginBase, PluginResult
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/new-check`)
-3. **Commit** your changes (`git commit -m "Add new header check"`)
-4. **Push** to your branch (`git push origin feature/new-check`)
-5. **Open** a Pull Request
+class MyCustomCheck(PluginBase):
+    name = "My Custom Header Check"
+    family = "http_headers"
+    severity = "medium"
+    description = "Checks for my custom header"
+    depends_on = [] # Declare KB dependencies if any (e.g. ['server'])
 
-### Ideas for Contribution
-- [ ] Complete `infoDisclosure.py` — information disclosure scanner
-- [ ] Add `cors.py` — CORS misconfiguration checker
-- [ ] Add `cookie.py` — Secure/HttpOnly/SameSite cookie flag checker
-- [ ] Build a unified CLI runner that executes all checks at once
-- [ ] Generate consolidated HTML/PDF reports from all scan results
+    def detect(self, target, kb):
+        # Access cached headers from KB instead of making redundant requests!
+        headers = kb.get("response_headers", {})
+        
+        if "My-Header" not in headers:
+            return PluginResult(
+                found=True,
+                title="Missing My-Header",
+                severity="medium",
+                confidence="high",
+                evidence="My-Header not present in response"
+            )
+        return PluginResult(found=False)
+```
+
+The scan engine will automatically register, resolve dependencies for, and execute your new check on the next scan!
 
 ---
 
 ## ⚖️ Legal Disclaimer
 
-> **⚠️ This toolkit is intended for authorized security testing and educational purposes only.**
+> **⚠️ This scanner is intended for authorized security testing and educational purposes only.**
 >
-> Unauthorized access to computer systems is illegal. Always obtain proper written authorization before scanning or testing any systems you do not own. The authors are not responsible for any misuse of these tools.
-
----
-
-## 📝 License
-
-This project is open-source and available under the [MIT License](LICENSE).
-
----
-
-<p align="center">
-  Made with ❤️ for the cybersecurity community
-</p>
+> Unauthorized access or scanning of computer networks is illegal. Always obtain written authorization before scanning target endpoints. The authors are not responsible for any misuse of this tool suite.
