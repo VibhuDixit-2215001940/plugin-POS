@@ -1,0 +1,221 @@
+# Common paths wordlist for discovery plugins.
+# Add new paths here — plugins load this file at runtime.
+# Lines starting with # are comments and ignored.
+
+# Git/SVN/Version Control
+/.git/
+/.git/config
+/.git/HEAD
+/.git/index
+/.svn/
+/.svn/entries
+/.hg/
+
+# Environment & Secrets
+/.env
+/.env.local
+/.env.dev
+/.env.production
+/.env.backup
+/.env.staging
+
+# Config Files
+/config.php
+/config.php.bak
+/config.json
+/config.yml
+/config.yaml
+/settings.py
+/settings.json
+/web.config
+/application.yml
+/application.properties
+
+# Backups
+/backup.zip
+/backup.tar.gz
+/db.sql
+/database.sql
+/site.zip
+/www.zip
+/admin.zip
+/backup/
+/old/
+/temp/
+/tmp/
+/dump.sql
+
+# Apache
+/server-status
+/server-info
+/.htaccess
+/.htpasswd
+
+# PHP
+/phpinfo.php
+/info.php
+/test.php
+/php.ini
+
+# Admin Panels
+/admin
+/admin/
+/administrator
+/admin/login
+/admin/dashboard
+/login
+/dashboard
+/cpanel
+/user/login
+/manager
+/manager/html
+
+# API Documentation
+/swagger
+/swagger-ui
+/swagger-ui.html
+/swagger/index.html
+/api-docs
+/openapi.json
+/openapi.yaml
+/redoc
+/graphql
+/graphiql
+/graphql/console
+
+# Spring Actuator
+/actuator
+/actuator/health
+/actuator/env
+/actuator/metrics
+/actuator/mappings
+/actuator/beans
+/actuator/configprops
+/actuator/info
+
+# Debug
+/debug
+/debug/default/view
+/debug/pprof
+/_debugbar
+/console
+/trace
+/_profiler
+
+# Cloud Credentials
+/.aws/credentials
+/credentials
+/aws.yml
+
+# Kubernetes / Docker
+/k8s
+/kubernetes
+/.kube/config
+/docker-compose.yml
+/Dockerfile
+
+# CI/CD
+/jenkins
+/gitlab
+/.gitlab-ci.yml
+/.github/workflows
+
+# Monitoring
+/grafana
+/prometheus
+/prometheus/metrics
+/kibana
+/nagios
+
+# CMS
+/wp-admin
+/wp-login.php
+/wp-config.php
+/wp-config.php.bak
+/xmlrpc.php
+/wp-content/debug.log
+/administrator/index.php
+/wp-json/wp/v2/users
+
+# Logs
+/logs
+/error.log
+/access.log
+/debug.log
+/app.log
+/application.log
+
+# Storage
+/storage
+/uploads
+/private
+/public
+/media
+
+# API
+/api
+/api/v1
+/api/v2
+
+# Common Files
+/robots.txt
+/crossdomain.xml
+/sitemap.xml
+/security.txt
+/.well-known/security.txt
+/humans.txt
+
+# Package Files
+/vendor/
+/node_modules/
+/package.json
+/composer.json
+/composer.lock
+/yarn.lock
+/Gemfile
+/requirements.txt
+
+# Test/Dev
+/test
+/testing
+/dev
+/staging
+/beta
+/demo
+
+# Database
+/phpmyadmin
+/mysql
+/mongo-express
+/adminer
+/adminer.php
+
+# Secrets/Keys
+/id_rsa
+/.ssh/id_rsa
+/secret.txt
+/secrets.yml
+/secrets.json
+
+# Java
+/jmx-console
+/web-console
+/manager/html
+/invoker/readonly
+/jbossws
+
+# Elasticsearch
+/_cat
+/_cat/indices
+/_cluster/health
+/_nodes
+
+# Misc
+/health
+/healthcheck
+/metrics
+/status
+/version
+/info
+/.DS_Store
+/thumbs.db

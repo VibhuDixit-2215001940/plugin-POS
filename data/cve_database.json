@@ -1,0 +1,109 @@
+{
+    "apache": [
+        {
+            "cve": "CVE-2021-41773",
+            "affected_versions": {"min": "2.4.49", "max": "2.4.49"},
+            "severity": "critical",
+            "description": "Path traversal and remote code execution in Apache HTTP Server 2.4.49",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2021-41773"]
+        },
+        {
+            "cve": "CVE-2021-42013",
+            "affected_versions": {"min": "2.4.49", "max": "2.4.50"},
+            "severity": "critical",
+            "description": "Path traversal and RCE in Apache 2.4.49-2.4.50 (incomplete fix for CVE-2021-41773)",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2021-42013"]
+        },
+        {
+            "cve": "CVE-2023-25690",
+            "affected_versions": {"min": "2.4.0", "max": "2.4.55"},
+            "severity": "critical",
+            "description": "HTTP request smuggling via mod_proxy in Apache < 2.4.56",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2023-25690"]
+        },
+        {
+            "cve": "CVE-2023-43622",
+            "affected_versions": {"min": "2.4.55", "max": "2.4.57"},
+            "severity": "high",
+            "description": "HTTP/2 DoS via zero-length headers in Apache < 2.4.58",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2023-43622"]
+        }
+    ],
+    "nginx": [
+        {
+            "cve": "CVE-2022-41741",
+            "affected_versions": {"min": "1.1.3", "max": "1.23.1"},
+            "severity": "high",
+            "description": "Memory corruption in nginx mp4 module",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2022-41741"]
+        },
+        {
+            "cve": "CVE-2021-23017",
+            "affected_versions": {"min": "0.6.18", "max": "1.20.0"},
+            "severity": "critical",
+            "description": "Off-by-one error in nginx resolver",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2021-23017"]
+        }
+    ],
+    "iis": [
+        {
+            "cve": "CVE-2021-31166",
+            "affected_versions": {"min": "10.0", "max": "10.0"},
+            "severity": "critical",
+            "description": "HTTP Protocol Stack RCE in Windows IIS",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2021-31166"]
+        }
+    ],
+    "tomcat": [
+        {
+            "cve": "CVE-2024-50379",
+            "affected_versions": {"min": "9.0.0", "max": "9.0.97"},
+            "severity": "critical",
+            "description": "RCE via partial PUT in Apache Tomcat on case-insensitive filesystem",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2024-50379"]
+        },
+        {
+            "cve": "CVE-2023-46589",
+            "affected_versions": {"min": "9.0.0", "max": "9.0.83"},
+            "severity": "high",
+            "description": "HTTP request smuggling in Apache Tomcat",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2023-46589"]
+        }
+    ],
+    "wordpress": [
+        {
+            "cve": "CVE-2023-2745",
+            "affected_versions": {"min": "1.0", "max": "6.2"},
+            "severity": "medium",
+            "description": "Directory traversal via wp_lang parameter in WordPress <= 6.2",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2023-2745"]
+        }
+    ],
+    "jenkins": [
+        {
+            "cve": "CVE-2024-23897",
+            "affected_versions": {"min": "2.0", "max": "2.441"},
+            "severity": "critical",
+            "description": "Arbitrary file read via CLI in Jenkins <= 2.441",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2024-23897"]
+        }
+    ],
+    "openssh": [
+        {
+            "cve": "CVE-2024-6387",
+            "affected_versions": {"min": "8.5", "max": "9.7"},
+            "severity": "critical",
+            "description": "regreSSHion - Remote code execution in OpenSSH server",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2024-6387"]
+        }
+    ],
+    "php": [
+        {
+            "cve": "CVE-2024-4577",
+            "affected_versions": {"min": "8.1.0", "max": "8.1.28"},
+            "severity": "critical",
+            "description": "CGI argument injection in PHP on Windows",
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2024-4577"]
+        }
+    ]
+}

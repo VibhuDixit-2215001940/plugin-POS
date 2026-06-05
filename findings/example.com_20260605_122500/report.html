@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scan Report — https://example.com</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;line-height:1.6}
+.container{max-width:1100px;margin:0 auto;padding:20px}
+.header{background:linear-gradient(135deg,#1e293b,#334155);border-radius:12px;padding:30px;margin-bottom:24px;border:1px solid #475569}
+.header h1{font-size:24px;color:#f8fafc;margin-bottom:8px}
+.header .target{color:#38bdf8;font-size:16px}
+.header .meta{color:#94a3b8;font-size:13px;margin-top:8px}
+.summary{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.summary-card{flex:1;min-width:100px;background:#1e293b;border-radius:10px;padding:16px;text-align:center;border:1px solid #334155}
+.summary-card .count{font-size:28px;font-weight:700}
+.summary-card .label{font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.finding{background:#1e293b;border-radius:10px;margin-bottom:16px;border:1px solid #334155;overflow:hidden}
+.finding-header{padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #334155;flex-wrap:wrap}
+.severity-badge,.confidence-badge{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;color:#fff;letter-spacing:0.5px}
+.finding-title{font-size:16px;font-weight:600;color:#f1f5f9;flex:1}
+.finding-meta{padding:8px 20px;display:flex;gap:16px;font-size:12px;color:#64748b;border-bottom:1px solid #1e293b}
+.finding-body{padding:16px 20px}
+.evidence-section,.plugin-output,.cve-section,.remediation{margin-top:12px}
+.evidence-text{background:#0f172a;padding:10px 14px;border-radius:6px;margin-top:6px;font-family:'Cascadia Code',monospace;font-size:13px;color:#38bdf8}
+.evidence-block{background:#0f172a;padding:10px 14px;border-radius:6px;margin-top:6px;font-size:12px;color:#cbd5e1;overflow-x:auto;white-space:pre-wrap;word-break:break-all;max-height:300px}
+.output-line{padding:2px 0;font-family:monospace;font-size:13px;color:#a5b4fc}
+.cve-link{color:#f472b6;text-decoration:none;margin-right:8px;font-weight:600}
+.cve-link:hover{text-decoration:underline}
+.remediation{background:#1a2e1a;border:1px solid #22c55e40;border-radius:6px;padding:12px;color:#86efac}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>Vulnerability Scan Report</h1>
+<div class="target">Target: https://example.com</div>
+<div class="meta">Generated: 2026-06-05 06:56 UTC</div>
+</div>
+<div class="summary">
+<div class="summary-card"><div class="count" style="color:#dc2626">0</div><div class="label">Critical</div></div>
+<div class="summary-card"><div class="count" style="color:#ea580c">1</div><div class="label">High</div></div>
+<div class="summary-card"><div class="count" style="color:#d97706">2</div><div class="label">Medium</div></div>
+<div class="summary-card"><div class="count" style="color:#2563eb">2</div><div class="label">Low</div></div>
+<div class="summary-card"><div class="count" style="color:#6b7280">1</div><div class="label">Info</div></div>
+<div class="summary-card"><div class="count" style="color:#f8fafc">6</div><div class="label">Total</div></div>
+</div>
+
+            <div class="finding" id="finding-1">
+                <div class="finding-header">
+                    <span class="severity-badge" style="background:#ea580c">HIGH</span>
+                    <span class="finding-title">Missing Content-Security-Policy</span>
+                    <span class="confidence-badge" style="background:#16a34a">Confidence: HIGH</span>
+                </div>
+                <div class="finding-meta">
+                    <span>Plugin: Missing Content-Security-Policy</span>
+                    <span>Family: http_headers</span>
+                    <span>Time: 0.202s</span>
+                </div>
+                <div class="finding-body">
+                    <div class="evidence-section">
+                        <strong>Evidence:</strong>
+                        <div class="evidence-text">CSP header not found</div>
+                    </div>
+                    <div class="plugin-output"><strong>Plugin Output:</strong><div class='output-line'>Content-Security-Policy header is MISSING.</div><div class='output-line'>Application is vulnerable to XSS and data injection attacks.</div></div>
+                    <div class="evidence-section"><strong>Request:</strong><pre class='evidence-block'>GET / HTTP/1.1
+Host: example.com
+</pre></div>
+                    <div class="evidence-section"><strong>Response:</strong><pre class='evidence-block'>HTTP/1.1 200
+Date: Fri, 05 Jun 2026 06:55:03 GMT
+Content-Type: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+Server: cloudflare
+last-modified: Thu, 04 Jun 2026 23:01:41 GMT
+allow: GET, HEAD
+Age: 5708
+cf-cache-status: HIT
+Content-Encoding: br
+CF-RAY: a06d44fcacf6b2cb-DEL
+</pre></div>
+                    
+                    <div class='remediation'><strong>Remediation:</strong> Implement a Content-Security-Policy header with restrictive directives.</div>
+                </div>
+            </div>
+            <div class="finding" id="finding-2">
+                <div class="finding-header">
+                    <span class="severity-badge" style="background:#d97706">MEDIUM</span>
+                    <span class="finding-title">Missing HSTS Header</span>
+                    <span class="confidence-badge" style="background:#16a34a">Confidence: HIGH</span>
+                </div>
+                <div class="finding-meta">
+                    <span>Plugin: Missing HSTS Header</span>
+                    <span>Family: http_headers</span>
+                    <span>Time: 0.287s</span>
+                </div>
+                <div class="finding-body">
+                    <div class="evidence-section">
+                        <strong>Evidence:</strong>
+                        <div class="evidence-text">Strict-Transport-Security header not found</div>
+                    </div>
+                    <div class="plugin-output"><strong>Plugin Output:</strong><div class='output-line'>Strict-Transport-Security header is MISSING.</div><div class='output-line'>Clients may connect over insecure HTTP.</div><div class='output-line'>URL: https://example.com/</div></div>
+                    <div class="evidence-section"><strong>Request:</strong><pre class='evidence-block'>GET / HTTP/1.1
+Host: example.com
+</pre></div>
+                    <div class="evidence-section"><strong>Response:</strong><pre class='evidence-block'>HTTP/1.1 200
+Date: Fri, 05 Jun 2026 06:55:03 GMT
+Content-Type: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+Server: cloudflare
+last-modified: Thu, 04 Jun 2026 23:01:41 GMT
+allow: GET, HEAD
+Age: 5708
+cf-cache-status: HIT
+Content-Encoding: br
+CF-RAY: a06d44fd0dd8da6d-DEL
+</pre></div>
+                    
+                    <div class='remediation'><strong>Remediation:</strong> Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains' header.</div>
+                </div>
+            </div>
+            <div class="finding" id="finding-3">
+                <div class="finding-header">
+                    <span class="severity-badge" style="background:#d97706">MEDIUM</span>
+                    <span class="finding-title">Missing X-Frame-Options</span>
+                    <span class="confidence-badge" style="background:#16a34a">Confidence: HIGH</span>
+                </div>
+                <div class="finding-meta">
+                    <span>Plugin: Missing X-Frame-Options</span>
+                    <span>Family: http_headers</span>
+                    <span>Time: 0.247s</span>
+                </div>
+                <div class="finding-body">
+                    <div class="evidence-section">
+                        <strong>Evidence:</strong>
+                        <div class="evidence-text">X-Frame-Options not set</div>
+                    </div>
+                    <div class="plugin-output"><strong>Plugin Output:</strong><div class='output-line'>X-Frame-Options header is MISSING.</div><div class='output-line'>Site may be vulnerable to clickjacking.</div></div>
+                    <div class="evidence-section"><strong>Request:</strong><pre class='evidence-block'>GET / HTTP/1.1
+Host: example.com
+</pre></div>
+                    <div class="evidence-section"><strong>Response:</strong><pre class='evidence-block'>HTTP/1.1 200
+Date: Fri, 05 Jun 2026 06:55:03 GMT
+Content-Type: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+Server: cloudflare
+last-modified: Thu, 04 Jun 2026 23:01:41 GMT
+allow: GET, HEAD
+Age: 5708
+cf-cache-status: HIT
+Content-Encoding: br
+CF-RAY: a06d44fd0ff8a7ee-DEL
+</pre></div>
+                    
+                    <div class='remediation'><strong>Remediation:</strong> Add 'X-Frame-Options: DENY' or 'SAMEORIGIN' header.</div>
+                </div>
+            </div>
+            <div class="finding" id="finding-4">
+                <div class="finding-header">
+                    <span class="severity-badge" style="background:#2563eb">LOW</span>
+                    <span class="finding-title">Missing X-Content-Type-Options</span>
+                    <span class="confidence-badge" style="background:#16a34a">Confidence: HIGH</span>
+                </div>
+                <div class="finding-meta">
+                    <span>Plugin: Missing X-Content-Type-Options</span>
+                    <span>Family: http_headers</span>
+                    <span>Time: 0.127s</span>
+                </div>
+                <div class="finding-body">
+                    <div class="evidence-section">
+                        <strong>Evidence:</strong>
+                        <div class="evidence-text">X-Content-Type-Options not set</div>
+                    </div>
+                    <div class="plugin-output"><strong>Plugin Output:</strong><div class='output-line'>X-Content-Type-Options header is MISSING.</div><div class='output-line'>Browser may MIME-sniff responses, enabling XSS.</div></div>
+                    <div class="evidence-section"><strong>Request:</strong><pre class='evidence-block'>GET / HTTP/1.1
+Host: example.com
+</pre></div>
+                    <div class="evidence-section"><strong>Response:</strong><pre class='evidence-block'>HTTP/1.1 200
+Date: Fri, 05 Jun 2026 06:55:03 GMT
+Content-Type: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+Server: cloudflare
+last-modified: Thu, 04 Jun 2026 23:01:41 GMT
+allow: GET, HEAD
+Age: 5708
+cf-cache-status: HIT
+Content-Encoding: br
+CF-RAY: a06d44fc797fa7fd-DEL
+</pre></div>
+                    
+                    <div class='remediation'><strong>Remediation:</strong> Add 'X-Content-Type-Options: nosniff' header.</div>
+                </div>
+            </div>
+            <div class="finding" id="finding-5">
+                <div class="finding-header">
+                    <span class="severity-badge" style="background:#2563eb">LOW</span>
+                    <span class="finding-title">Missing Referrer-Policy</span>
+                    <span class="confidence-badge" style="background:#16a34a">Confidence: HIGH</span>
+                </div>
+                <div class="finding-meta">
+                    <span>Plugin: Missing Referrer-Policy</span>
+                    <span>Family: http_headers</span>
+                    <span>Time: 0.281s</span>
+                </div>
+                <div class="finding-body">
+                    <div class="evidence-section">
+                        <strong>Evidence:</strong>
+                        <div class="evidence-text">Referrer-Policy not set</div>
+                    </div>
+                    <div class="plugin-output"><strong>Plugin Output:</strong><div class='output-line'>Referrer-Policy header is MISSING.</div><div class='output-line'>Full URL may leak to third parties via Referer header.</div></div>
+                    <div class="evidence-section"><strong>Request:</strong><pre class='evidence-block'>GET / HTTP/1.1
+Host: example.com
+</pre></div>
+                    <div class="evidence-section"><strong>Response:</strong><pre class='evidence-block'>HTTP/1.1 200
+Date: Fri, 05 Jun 2026 06:55:03 GMT
+Content-Type: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+Server: cloudflare
+last-modified: Thu, 04 Jun 2026 23:01:41 GMT
+allow: GET, HEAD
+Age: 5708
+cf-cache-status: HIT
+Content-Encoding: br
+CF-RAY: a06d44fd1fb0a704-DEL
+</pre></div>
+                    
+                    <div class='remediation'><strong>Remediation:</strong> Add 'Referrer-Policy: strict-origin-when-cross-origin' header.</div>
+                </div>
+            </div>
+            <div class="finding" id="finding-6">
+                <div class="finding-header">
+                    <span class="severity-badge" style="background:#6b7280">INFO</span>
+                    <span class="finding-title">Server Version Detection</span>
+                    <span class="confidence-badge" style="background:#d97706">Confidence: MEDIUM</span>
+                </div>
+                <div class="finding-meta">
+                    <span>Plugin: Server Version Detection</span>
+                    <span>Family: fingerprint</span>
+                    <span>Time: 0.129s</span>
+                </div>
+                <div class="finding-body">
+                    <div class="evidence-section">
+                        <strong>Evidence:</strong>
+                        <div class="evidence-text">cloudflare</div>
+                    </div>
+                    <div class="plugin-output"><strong>Plugin Output:</strong><div class='output-line'>Server Type: cloudflare</div><div class='output-line'>Server Header: cloudflare</div></div>
+                    <div class="evidence-section"><strong>Request:</strong><pre class='evidence-block'>GET / HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36
+</pre></div>
+                    <div class="evidence-section"><strong>Response:</strong><pre class='evidence-block'>HTTP/1.1 200
+Date: Fri, 05 Jun 2026 06:55:02 GMT
+Content-Type: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+Server: cloudflare
+last-modified: Thu, 04 Jun 2026 23:01:41 GMT
+allow: GET, HEAD
+Age: 5708
+cf-cache-status: HIT
+Content-Encoding: br
+CF-RAY: a06d44fafe62a717-DEL
+
+&lt;!doctype html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;title&gt;Example Domain&lt;/title&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;style&gt;body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div&gt;&lt;h1&gt;Example Domain&lt;/h1&gt;&lt;p&gt;This domain is for use in documentation examples without needing permission. Avoid use in operations.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://iana.org/domains/example&quot;&gt;Learn more&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;
+</pre></div>
+                    
+                    <div class='remediation'><strong>Remediation:</strong> Configure the web server to suppress version information in HTTP headers.</div>
+                </div>
+            </div>
+</div>
+</body>
+</html>

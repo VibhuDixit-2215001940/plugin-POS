@@ -1,0 +1,16 @@
+{
+  "plugin_name": "Missing X-Frame-Options",
+  "found": true,
+  "title": "Missing X-Frame-Options",
+  "severity": "medium",
+  "confidence": "high",
+  "evidence": "X-Frame-Options not set",
+  "plugin_output": [
+    "X-Frame-Options header is MISSING.",
+    "Site may be vulnerable to clickjacking."
+  ],
+  "cve_refs": [],
+  "remediation": "Add 'X-Frame-Options: DENY' or 'SAMEORIGIN' header.",
+  "screenshot": null,
+  "timestamp": "2026-06-05T06:55:01.949309+00:00"
+}

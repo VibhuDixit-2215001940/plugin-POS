@@ -1,0 +1,17 @@
+{
+  "plugin_name": "Missing HSTS Header",
+  "found": true,
+  "title": "Missing HSTS Header",
+  "severity": "medium",
+  "confidence": "high",
+  "evidence": "Strict-Transport-Security header not found",
+  "plugin_output": [
+    "Strict-Transport-Security header is MISSING.",
+    "Clients may connect over insecure HTTP.",
+    "URL: https://example.com/"
+  ],
+  "cve_refs": [],
+  "remediation": "Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains' header.",
+  "screenshot": null,
+  "timestamp": "2026-06-05T06:55:01.959064+00:00"
+}

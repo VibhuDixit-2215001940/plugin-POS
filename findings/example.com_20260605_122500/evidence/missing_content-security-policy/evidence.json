@@ -1,0 +1,16 @@
+{
+  "plugin_name": "Missing Content-Security-Policy",
+  "found": true,
+  "title": "Missing Content-Security-Policy",
+  "severity": "high",
+  "confidence": "high",
+  "evidence": "CSP header not found",
+  "plugin_output": [
+    "Content-Security-Policy header is MISSING.",
+    "Application is vulnerable to XSS and data injection attacks."
+  ],
+  "cve_refs": [],
+  "remediation": "Implement a Content-Security-Policy header with restrictive directives.",
+  "screenshot": null,
+  "timestamp": "2026-06-05T06:55:01.856021+00:00"
+}

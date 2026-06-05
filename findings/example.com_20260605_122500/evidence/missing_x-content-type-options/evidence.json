@@ -1,0 +1,16 @@
+{
+  "plugin_name": "Missing X-Content-Type-Options",
+  "found": true,
+  "title": "Missing X-Content-Type-Options",
+  "severity": "low",
+  "confidence": "high",
+  "evidence": "X-Content-Type-Options not set",
+  "plugin_output": [
+    "X-Content-Type-Options header is MISSING.",
+    "Browser may MIME-sniff responses, enabling XSS."
+  ],
+  "cve_refs": [],
+  "remediation": "Add 'X-Content-Type-Options: nosniff' header.",
+  "screenshot": null,
+  "timestamp": "2026-06-05T06:55:01.810560+00:00"
+}

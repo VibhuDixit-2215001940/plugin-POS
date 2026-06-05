@@ -1,0 +1,16 @@
+{
+  "plugin_name": "Server Version Detection",
+  "found": true,
+  "title": "Server Version Detection",
+  "severity": "info",
+  "confidence": "medium",
+  "evidence": "cloudflare",
+  "plugin_output": [
+    "Server Type: cloudflare",
+    "Server Header: cloudflare"
+  ],
+  "cve_refs": [],
+  "remediation": "Configure the web server to suppress version information in HTTP headers.",
+  "screenshot": null,
+  "timestamp": "2026-06-05T06:55:01.503864+00:00"
+}

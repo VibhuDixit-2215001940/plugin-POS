@@ -1,0 +1,172 @@
+# External signatures for detection plugins.
+# Add new signatures here — no code changes needed.
+# Plugins load this file at runtime via core.data_loader.
+
+server_headers:
+  apache:
+    patterns:
+      - "Apache"
+      - "apache"
+    version_regex: "Apache/([0-9.]+)"
+  nginx:
+    patterns:
+      - "nginx"
+    version_regex: "nginx/([0-9.]+)"
+  iis:
+    patterns:
+      - "Microsoft-IIS"
+      - "IIS"
+    version_regex: "Microsoft-IIS/([0-9.]+)"
+  tomcat:
+    patterns:
+      - "Apache-Coyote"
+      - "Tomcat"
+    version_regex: "(?:Tomcat|Apache-Coyote)/([0-9.]+)"
+  litespeed:
+    patterns:
+      - "LiteSpeed"
+    version_regex: "LiteSpeed/([0-9.]+)"
+  caddy:
+    patterns:
+      - "Caddy"
+    version_regex: "Caddy/([0-9.]+)"
+  cloudflare:
+    patterns:
+      - "cloudflare"
+    version_regex: null
+
+technology_patterns:
+  wordpress:
+    html_patterns:
+      - "wp-content"
+      - "wp-includes"
+      - "/wp-json/"
+    header_patterns:
+      - "X-Powered-By: WordPress"
+    version_regex: "WordPress ([0-9.]+)"
+    meta_tag: "generator"
+  drupal:
+    html_patterns:
+      - "Drupal"
+      - "sites/default/files"
+      - "drupal.js"
+    header_patterns:
+      - "X-Generator: Drupal"
+    version_regex: "Drupal ([0-9.]+)"
+  joomla:
+    html_patterns:
+      - "/media/jui/"
+      - "/components/com_"
+      - "Joomla!"
+    header_patterns: []
+    version_regex: null
+  react:
+    html_patterns:
+      - "__NEXT_DATA__"
+      - "_next/static"
+      - "react"
+      - "__react"
+    header_patterns: []
+  vue:
+    html_patterns:
+      - "vue"
+      - "__vue"
+      - "v-cloak"
+    header_patterns: []
+  angular:
+    html_patterns:
+      - "ng-app"
+      - "ng-version"
+      - "angular"
+    header_patterns: []
+  bootstrap:
+    html_patterns:
+      - "bootstrap"
+    header_patterns: []
+  jquery:
+    html_patterns:
+      - "jquery"
+    header_patterns: []
+  php:
+    html_patterns: []
+    header_patterns:
+      - "X-Powered-By: PHP"
+    version_regex: "PHP/([0-9.]+)"
+  aspnet:
+    html_patterns:
+      - "__VIEWSTATE"
+      - "__EVENTVALIDATION"
+      - "aspnet"
+    header_patterns:
+      - "X-AspNet-Version"
+      - "X-Powered-By: ASP.NET"
+    version_regex: "X-AspNet-Version: ([0-9.]+)"
+
+info_disclosure_signatures:
+  git_repo:
+    patterns:
+      - "repositoryformatversion"
+      - "[core]"
+      - "refs/heads"
+  env_file:
+    patterns:
+      - "APP_KEY="
+      - "DB_PASSWORD="
+      - "AWS_SECRET="
+      - "SECRET_KEY="
+      - "API_KEY="
+  phpinfo:
+    patterns:
+      - "PHP Version"
+      - "phpinfo()"
+      - "Zend Engine"
+  server_status:
+    patterns:
+      - "Apache Server Status"
+      - "Server uptime"
+      - "CPU Usage"
+  swagger:
+    patterns:
+      - "swagger-ui"
+      - "openapi"
+      - "Swagger UI"
+  actuator:
+    patterns:
+      - '"status":"UP"'
+      - "diskSpace"
+      - "spring"
+  debug_page:
+    patterns:
+      - "Traceback (most recent call last)"
+      - "stack trace"
+      - "Debug mode"
+      - "DJANGO_SETTINGS_MODULE"
+
+sql_error_signatures:
+  mysql:
+    - "You have an error in your SQL syntax"
+    - "mysql_fetch"
+    - "Warning: mysql"
+    - "MySQLSyntaxErrorException"
+  postgresql:
+    - "ERROR:  syntax error at or near"
+    - "PSQLException"
+    - "org.postgresql"
+  mssql:
+    - "Unclosed quotation mark"
+    - "Microsoft OLE DB"
+    - "ODBC SQL Server Driver"
+    - "SqlException"
+  oracle:
+    - "ORA-"
+    - "oracle.jdbc"
+    - "quoted string not properly terminated"
+  sqlite:
+    - "SQLITE_ERROR"
+    - "sqlite3.OperationalError"
+    - "near \""
+  generic:
+    - "SQL syntax"
+    - "syntax error"
+    - "unexpected end of SQL"
+    - "invalid query"
