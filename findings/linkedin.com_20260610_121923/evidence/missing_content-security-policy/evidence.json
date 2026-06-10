@@ -1,0 +1,16 @@
+{
+  "plugin_name": "Missing Content-Security-Policy",
+  "found": true,
+  "title": "Weak Content-Security-Policy",
+  "severity": "medium",
+  "confidence": "high",
+  "evidence": "CSP: default-src 'none'; connect-src 'self' *.licdn.com *.linkedin.com cdn.linkedin.oribi.io dpm.demdex.net/id lnkd.demdex.net blob: accounts.google.com/gsi/ linkedin.sc.omtrdc.net/b/ss/ v.clarity.ms/colle",
+  "plugin_output": [
+    "CSP allows 'unsafe-inline' \u2014 XSS protection weakened",
+    "CSP uses wildcard (*) \u2014 too permissive"
+  ],
+  "cve_refs": [],
+  "remediation": "Remove unsafe-inline and unsafe-eval from CSP directives.",
+  "screenshot": null,
+  "timestamp": "2026-06-10T06:49:27.201190+00:00"
+}

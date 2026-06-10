@@ -1,0 +1,21 @@
+{
+  "plugin_name": "Dangerous Files & Panels Discovery",
+  "found": true,
+  "title": "Dangerous Files & Panels Discovery",
+  "severity": "medium",
+  "confidence": "high",
+  "evidence": "7 sensitive paths discovered",
+  "plugin_output": [
+    "[200] /login (score: 50, severity: medium)",
+    "[200] /dashboard (score: 50, severity: medium)",
+    "[200] /old/ (score: 50, severity: medium)",
+    "[200] /robots.txt (score: 50, severity: medium)",
+    "[200] /.well-known/security.txt (score: 50, severity: medium)",
+    "[200] /media (score: 50, severity: medium)",
+    "[200] /health (score: 50, severity: medium)"
+  ],
+  "cve_refs": [],
+  "remediation": "Remove or restrict access to exposed files, admin panels, and debug endpoints.",
+  "screenshot": null,
+  "timestamp": "2026-06-10T06:49:35.406857+00:00"
+}

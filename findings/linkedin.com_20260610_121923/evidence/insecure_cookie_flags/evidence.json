@@ -1,0 +1,24 @@
+{
+  "plugin_name": "Insecure Cookie Flags",
+  "found": true,
+  "title": "Insecure Cookie Flags",
+  "severity": "high",
+  "confidence": "high",
+  "evidence": "4 cookie issues found",
+  "plugin_output": [
+    "Cookie 'JSESSIONID' missing HttpOnly (high)",
+    "Cookie 'lang' missing HttpOnly (medium)",
+    "Cookie 'bcookie' missing HttpOnly (medium)",
+    "Cookie 'lidc' missing HttpOnly (medium)",
+    "Cookie: JSESSIONID | Raw: JSESSIONID=ajax:0363947196898901502; SameSite=None; Path=/; Domain=.www.linkedin.com; Secure",
+    "Cookie: lang | Raw: lang=v=2&lang=en-us; SameSite=None; Path=/; Domain=linkedin.com; Secure",
+    "Cookie: bcookie | Raw: bcookie=\"v=2&d050a27f-dedb-4f0e-809c-882fe65aa5f5\"; domain=.linkedin.com; Path=/; Secure; Expires=Th",
+    "Cookie: bscookie | Raw: bscookie=\"v=1&2026061006492833ad8ceb-7938-4b6c-8c5d-88752a3847e5AQEAm02WwJ6y4VzvKIPzVWWShqPaMlH6\"; d",
+    "Cookie: lidc | Raw: lidc=\"b=TGST04:s=T:r=T:a=T:p=T:g=3704:u=1:x=1:i=1781074168:t=1781160568:v=2:sig=AQG0zTMkJ50xsSpcojyo",
+    "Cookie: __cf_bm | Raw: __cf_bm=3bw6Vq0S8cCqY3VwB95ijFTrGNi__SvSfKHDFaiY_jc-1781074168.049721-1.0.1.1-FPxb4VuTn3w2_nr7CuhByn"
+  ],
+  "cve_refs": [],
+  "remediation": "Set HttpOnly, Secure, and SameSite flags on all sensitive cookies.",
+  "screenshot": null,
+  "timestamp": "2026-06-10T06:49:27.798797+00:00"
+}

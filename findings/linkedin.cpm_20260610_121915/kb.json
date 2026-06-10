@@ -1,0 +1,23 @@
+{
+  "kb": {
+    "scan": {
+      "target": "https://linkedin.cpm",
+      "duration": 0.86
+    }
+  },
+  "history": [
+    {
+      "action": "set",
+      "key": "scan.target",
+      "value": "https://linkedin.cpm",
+      "timestamp": "2026-06-10T06:49:16.379399+00:00"
+    },
+    {
+      "action": "set",
+      "key": "scan.duration",
+      "value": "0.86",
+      "timestamp": "2026-06-10T06:49:16.379399+00:00"
+    }
+  ],
+  "saved_at": "2026-06-10T06:49:16.379399+00:00"
+}

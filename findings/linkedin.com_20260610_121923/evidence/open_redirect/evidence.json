@@ -1,0 +1,18 @@
+{
+  "plugin_name": "Open Redirect",
+  "found": true,
+  "title": "Open Redirect",
+  "severity": "medium",
+  "confidence": "high",
+  "evidence": "Redirects to attacker-controlled URL: https://www.linkedin.com/?url=https://evil.com",
+  "plugin_output": [
+    "Param: url",
+    "Payload: https://evil.com",
+    "Location: https://www.linkedin.com/?url=https://evil.com",
+    "URL: https://linkedin.com?url=https://evil.com"
+  ],
+  "cve_refs": [],
+  "remediation": "Validate redirect destinations against a whitelist.",
+  "screenshot": null,
+  "timestamp": "2026-06-10T06:49:26.854690+00:00"
+}

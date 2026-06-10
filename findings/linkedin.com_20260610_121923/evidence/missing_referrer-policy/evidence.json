@@ -1,0 +1,16 @@
+{
+  "plugin_name": "Missing Referrer-Policy",
+  "found": true,
+  "title": "Missing Referrer-Policy",
+  "severity": "low",
+  "confidence": "high",
+  "evidence": "Referrer-Policy not set",
+  "plugin_output": [
+    "Referrer-Policy header is MISSING.",
+    "Full URL may leak to third parties via Referer header."
+  ],
+  "cve_refs": [],
+  "remediation": "Add 'Referrer-Policy: strict-origin-when-cross-origin' header.",
+  "screenshot": null,
+  "timestamp": "2026-06-10T06:49:27.487271+00:00"
+}
